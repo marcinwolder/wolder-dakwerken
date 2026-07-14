@@ -14,3 +14,8 @@
    * Most common options ready for click
    * Always text input for other options
    * Steps like on e-commerce apps - user can see how many steps are left
+
+## Translations
+
+1. Use English as a default language.
+2. Remember to use `i18next` and `react-i18next` for translations.
