@@ -1,0 +1,45 @@
+[
+    {
+        "section_name": "Dane kontatkowe",
+        "description": "Powiedz mi o sobie trochę więcej",
+        "rows": [
+            [
+                {
+                    "id": "firstName",
+                    "name": "Imię",
+                    "type": "text",
+                    "autocomplete": "given-name"
+                },
+                {
+                    "id": "lastName",
+                    "name": "Nazwisko",
+                    "type": "text",
+                    "autocomplete": "family-name"
+                }
+            ],
+            [
+                {
+                    "id": "phoneNumber",
+                    "name": "Numer telefonu",
+                    "type": "phone",
+                    "placeholder": "+48 111 222 333",
+                    "autocomplete": "tel"
+                }
+            ],
+            [
+                {
+                    "id": "email",
+                    "name": "Adres e-mail",
+                    "type": "email",
+                    "placeholder": "kontakt@wolderdakwerken.nl",
+                    "autocomplete": "email"
+                }
+            ]
+        ]
+    },
+    {
+        "section_name": "Rodzaj naprawy"
+    },
+    { "section_name": "Szczegóły" },
+    { "section_name": "Podsumo-wanie" }
+]

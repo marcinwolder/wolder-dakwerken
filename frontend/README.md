@@ -1,21 +1,46 @@
-# Wolder Dakwerken Website
+# Astro Starter Kit: Basics
 
-## Main concept
+```sh
+yarn create astro@latest -- --template basics
+```
 
-1. Multiply languages (polish, german, dutch, english)
-2. Mobile first, desktop second
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-## Screens
+## 🚀 Project Structure
 
-1. Landing page
-   * Visible button for easier getting in contact
-   * Some example photos of ready products as a carousel
-2. Form page
-   * Most common options ready for click
-   * Always text input for other options
-   * Steps like on e-commerce apps - user can see how many steps are left
+Inside of your Astro project, you'll see the following folders and files:
 
-## Translations
+```text
+/
+├── public/
+│   └── favicon.svg
+├── src
+│   ├── assets
+│   │   └── astro.svg
+│   ├── components
+│   │   └── Welcome.astro
+│   ├── layouts
+│   │   └── Layout.astro
+│   └── pages
+│       └── index.astro
+└── package.json
+```
 
-1. Use English as a default language.
-2. Remember to use `i18next` and `react-i18next` for translations.
+To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `yarn install`             | Installs dependencies                            |
+| `yarn dev`             | Starts local dev server at `localhost:4321`      |
+| `yarn build`           | Build your production site to `./dist/`          |
+| `yarn preview`         | Preview your build locally, before deploying     |
+| `yarn astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `yarn astro -- --help` | Get help using the Astro CLI                     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

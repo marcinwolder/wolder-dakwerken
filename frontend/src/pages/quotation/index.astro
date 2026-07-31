@@ -1,0 +1,41 @@
+---
+import Main from "../../layouts/Main.astro";
+import data from "../../data/quotation_form/pl.json";
+// import Form from "../../components/Form";
+import Quotation from "./_QuotationPage.tsx";
+---
+
+<Main>
+    <div class="my-8 text-sm">
+        <ul class="steps" data-steps-count={data.length}>
+            {
+                data.map((section, i) => (
+                    <li class="step" data-step={i}>
+                        {section.section_name}
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+    <Quotation client:load />
+</Main>
+<script>
+    import { clamp } from "../../lib/utils";
+    import { $currentSection } from "../../quotationStore";
+    const step =
+        Number(new URLSearchParams(window.location.search).get("step")) || 1;
+    const liElements =
+        document.querySelectorAll<HTMLLIElement>("li[data-step]");
+    const maxSteps = liElements.length;
+    const clampedStep = clamp(step, 1, maxSteps);
+    $currentSection.set(clampedStep);
+
+    $currentSection.subscribe((val, _) => {
+        liElements.forEach((element) => {
+            const elementStep = Number(element.dataset.step);
+            if (elementStep < val) {
+                element.classList.add("step-accent");
+            }
+        });
+    });
+</script>

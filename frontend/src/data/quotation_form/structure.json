@@ -1,0 +1,33 @@
+[
+    {
+        "sectionId": "contact",
+        "inputs": [
+            [
+                {
+                    "inputId": "firstName",
+                    "type": "text",
+                    "autocomplete": "given-name"
+                },
+                {
+                    "inputId": "lastName",
+                    "type": "text",
+                    "autocomplete": "family-name"
+                }
+            ],
+            [
+                {
+                    "inputId": "phoneNumber",
+                    "type": "phone",
+                    "autocomplete": "tel"
+                }
+            ],
+            [
+                {
+                    "inputId": "email",
+                    "type": "email",
+                    "autocomplete": "email"
+                }
+            ]
+        ]
+    }
+]
