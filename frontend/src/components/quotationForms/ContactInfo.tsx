@@ -1,10 +1,10 @@
-import classNames from "classnames";
-import { useFormContext } from "react-hook-form";
-import { BsChatSquareText, BsEnvelopeAt, BsWhatsapp } from "react-icons/bs";
+import classNames from 'classnames';
+import { useFormContext } from 'react-hook-form';
+import { BsChatSquareText, BsEnvelopeAt, BsWhatsapp } from 'react-icons/bs';
 
-import { $currentSection } from "../../quotationStore";
-import FormCheckbox from "../FormCheckbox";
-import FormInput from "../FormInput";
+import { $currentSection, redirectToSection } from '../../quotationStore';
+import FormCheckbox from '../FormCheckbox';
+import FormInput from '../FormInput';
 
 export default function ContactInfo() {
     const {
@@ -68,32 +68,32 @@ export default function ContactInfo() {
                     </p>
                 )}
             </fieldset>
-            <input
-                type="button"
-                className="btn mt-4"
-                value={"Następny krok"}
-                onClick={async () => {
-                    const isSetepValid = await trigger(
-                        [
-                            "firstName",
-                            "lastName",
-                            "phoneNumber",
-                            "email",
-                            "contactWhatsapp",
-                            "contactEmail",
-                            "contactSms",
-                        ],
-                        { shouldFocus: true },
-                    );
-                    if (isSetepValid) {
-                        const nextStep = $currentSection.get() + 1;
-                        $currentSection.set(nextStep);
-                        const url = new URL(window.location.href);
-                        url.searchParams.set("step", nextStep.toString());
-                        window.history.pushState({}, "", url);
-                    }
-                }}
-            />
+            <div className="sticky bottom-0">
+                <div className="divider" />
+                <input
+                    type="button"
+                    className="btn btn-secondary mb-4 w-full"
+                    value={"Następny krok"}
+                    onClick={async () => {
+                        const isSetepValid = await trigger(
+                            [
+                                "firstName",
+                                "lastName",
+                                "phoneNumber",
+                                "email",
+                                "contactWhatsapp",
+                                "contactEmail",
+                                "contactSms",
+                            ],
+                            { shouldFocus: true },
+                        );
+                        if (isSetepValid) {
+                            const nextStep = $currentSection.get() + 1;
+                            redirectToSection(nextStep);
+                        }
+                    }}
+                />
+            </div>
         </>
     );
 }

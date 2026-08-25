@@ -1,40 +1,43 @@
 ---
 import Main from "../../layouts/Main.astro";
-import data from "../../data/quotation_form/pl.json";
-// import Form from "../../components/Form";
 import Quotation from "./_QuotationPage.tsx";
 ---
 
 <Main>
     <div class="my-8 text-sm">
-        <ul class="steps" data-steps-count={data.length}>
-            {
-                data.map((section, i) => (
-                    <li class="step" data-step={i}>
-                        {section.section_name}
-                    </li>
-                ))
-            }
+        <ul class="steps">
+            <li class="step step-secondary">Dane kontaktowe</li>
+            <li class="step">Rodzaj naprawy</li>
+            <li class="step">Szczegóły</li>
+            <li class="step">Podsumo-wanie</li>
         </ul>
     </div>
     <Quotation client:load />
 </Main>
 <script>
     import { clamp } from "../../lib/utils";
-    import { $currentSection } from "../../quotationStore";
+    import { $currentSection, redirectToSection } from "../../quotationStore";
     const step =
         Number(new URLSearchParams(window.location.search).get("step")) || 1;
     const liElements =
-        document.querySelectorAll<HTMLLIElement>("li[data-step]");
+        document.querySelectorAll<HTMLLIElement>("li.step");
     const maxSteps = liElements.length;
     const clampedStep = clamp(step, 1, maxSteps);
+    liElements.forEach((el, i) => {
+        el.addEventListener("click", () => {
+            if ($currentSection.get()-1 > i) {
+                redirectToSection(i + 1);
+            }
+        });
+    });
     $currentSection.set(clampedStep);
 
     $currentSection.subscribe((val, _) => {
-        liElements.forEach((element) => {
-            const elementStep = Number(element.dataset.step);
-            if (elementStep < val) {
-                element.classList.add("step-accent");
+        liElements.forEach((element, i) => {
+            if (i < val) {
+                element.classList.add("step-secondary");
+            } else {
+                element.classList.remove("step-secondary");
             }
         });
     });
