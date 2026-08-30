@@ -1,18 +1,18 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
-const FormInput: React.FC<
+const FormCheckbox: React.FC<
     React.PropsWithChildren<{
         id: string;
         name: string;
         enterKeyHint?:
-            | "search"
-            | "enter"
-            | "done"
-            | "go"
-            | "next"
-            | "previous"
-            | "send";
+        | "search"
+        | "enter"
+        | "done"
+        | "go"
+        | "next"
+        | "previous"
+        | "send";
         clearId?: string;
     }>
 > = ({ id, enterKeyHint, name, children, clearId }) => {
@@ -37,4 +37,4 @@ const FormInput: React.FC<
     );
 };
 
-export default FormInput;
+export default FormCheckbox;

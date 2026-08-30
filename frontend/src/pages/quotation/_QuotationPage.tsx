@@ -8,6 +8,7 @@ import { useStore } from '@nanostores/react';
 import ContactInfo from '../../components/quotationForms/ContactInfo';
 import RepairDetails from '../../components/quotationForms/RepairDetails';
 import { $currentSection } from '../../quotationStore';
+import LocationDetails from '../../components/quotationForms/LocationDetails';
 
 const REQUIRED_ERROR_MESSAGE = "Pole jest wymagane";
 
@@ -39,6 +40,9 @@ const quotationSchema = z
         repairRoofWindowsAndHatches: z.boolean(),
         repairRoofInsulation: z.boolean(),
         repairSoffitInstallation: z.boolean(),
+        streetName: z.string().min(1, REQUIRED_ERROR_MESSAGE),
+        zipCode: z.string().min(1, REQUIRED_ERROR_MESSAGE).regex(/(\d\d-\d\d\d)|(\d{5})/, "Niepoprawny format pocztowego"),
+        city: z.string().min(1, REQUIRED_ERROR_MESSAGE),
     })
     .refine(
         (data) => data.contactEmail || data.contactSms || data.contactWhatsapp,
@@ -90,6 +94,7 @@ export default function Quotation() {
                         className="flex flex-col justify-center">
                         {currentSection === 1 && <ContactInfo />}
                         {currentSection === 2 && <RepairDetails />}
+                        {currentSection === 3 && <LocationDetails />}
                     </form>
                 </FormProvider>
             </div>
