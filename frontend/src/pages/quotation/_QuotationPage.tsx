@@ -9,6 +9,7 @@ import ContactInfo from '../../components/quotationForms/ContactInfo';
 import RepairDetails from '../../components/quotationForms/RepairDetails';
 import { $currentSection } from '../../quotationStore';
 import LocationDetails from '../../components/quotationForms/LocationDetails';
+import Summary from '../../components/quotationForms/Summary';
 
 const REQUIRED_ERROR_MESSAGE = "Pole jest wymagane";
 
@@ -73,13 +74,13 @@ export default function Quotation() {
     });
     const { handleSubmit } = methods;
     const currentSection = useStore($currentSection);
-    // console.log(currentSection);
     return (
         <>
             <div className="mx-4">
                 {/* TODO: Make modal for exiting before compleating */}
                 {/* TODO: Make next/done keaybord keys switch inputs */}
                 {/* TODO: Make form progress persist in the localStorage */}
+                {/* TODO: User should not be able to get to next step using url */}
                 <div className="text-xl mb-2">
                     {currentSection === 1 && "Powiedz mi o sobie trochę więcej"}
                     {currentSection === 2 && "Jaka naprawa cię interesuje"}
@@ -95,6 +96,7 @@ export default function Quotation() {
                         {currentSection === 1 && <ContactInfo />}
                         {currentSection === 2 && <RepairDetails />}
                         {currentSection === 3 && <LocationDetails />}
+                        {currentSection === 4 && <Summary />}
                     </form>
                 </FormProvider>
             </div>
