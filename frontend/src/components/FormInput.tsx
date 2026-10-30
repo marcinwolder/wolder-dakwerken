@@ -39,7 +39,7 @@ const FormInput: React.FC<
     return (
         <fieldset className="fieldset w-full min-w-0">
             <label
-                className={classNames("label whitespace-normal leading-tight", { "text-error": isError })}
+                className={classNames("label w-full whitespace-normal leading-tight", { "text-error": isError })}
                 htmlFor={id}>
                 {name}
             </label>

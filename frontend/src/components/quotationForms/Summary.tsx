@@ -33,7 +33,7 @@ function SummaryCard(props: {
                     <button
                         type="button"
                         className="btn btn-ghost btn-circle shrink-0 text-xl"
-                        aria-label={t("button.edit")}
+                        aria-label={`${t("button.edit")}: ${props.title}`}
                         title={t("button.edit")}
                         onClick={() => redirectToSection(props.step)}>
                         <BsPencil />

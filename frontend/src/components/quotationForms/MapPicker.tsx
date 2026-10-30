@@ -29,6 +29,9 @@ const STATUS_MESSAGES = {
     unsupportedCountry: "map.unsupportedCountry",
 } as const;
 
+// Wraps long translations onto two lines without touching the button edges.
+const MODAL_BUTTON = "btn btn-lg h-auto min-h-14 py-3 px-3 leading-tight";
+
 type Coords = [number, number];
 
 const pinIcon = L.divIcon({
@@ -148,6 +151,7 @@ export default function MapPicker({
     const latestRequest = useRef(0);
 
     const pick = async (coords: Coords) => {
+        // A pick made by hand also cancels a pending geolocation request, so the last action wins.
         const requestId = ++latestRequest.current;
         setPosition(coords);
         setAddress(null);
@@ -170,9 +174,18 @@ export default function MapPicker({
             return;
         }
         setStatus("loading");
+        const requestId = ++latestRequest.current;
         navigator.geolocation.getCurrentPosition(
-            (p) => pick([p.coords.latitude, p.coords.longitude]),
-            () => setStatus("locateError"),
+            (p) => {
+                if (requestId === latestRequest.current) {
+                    pick([p.coords.latitude, p.coords.longitude]);
+                }
+            },
+            () => {
+                if (requestId === latestRequest.current) {
+                    setStatus("locateError");
+                }
+            },
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
         );
     };
@@ -220,16 +233,16 @@ export default function MapPicker({
                 <div className="modal-action grid grid-cols-2 gap-2">
                     <button
                         type="button"
-                        className="btn btn-lg h-auto min-h-14 py-3 px-3 leading-tight rounded-3xl font-bold col-span-2"
+                        className={`${MODAL_BUTTON} rounded-3xl font-bold col-span-2`}
                         onClick={locateMe}>
                         {t("map.locate")}
                     </button>
-                    <button type="button" className="btn btn-lg h-auto min-h-14 py-3 px-3 leading-tight btn-ghost border-primary rounded-3xl font-bold" onClick={onClose}>
+                    <button type="button" className={`${MODAL_BUTTON} btn-ghost border-primary rounded-3xl font-bold`} onClick={onClose}>
                         {t("map.cancel")}
                     </button>
                     <button
                         type="button"
-                        className="btn btn-lg h-auto min-h-14 py-3 px-3 leading-tight btn-secondary rounded-3xl font-bold"
+                        className={`${MODAL_BUTTON} btn-secondary rounded-3xl font-bold`}
                         disabled={!address || !addressText}
                         onClick={() => address && onSelect(address)}>
                         {t("map.use")}
