@@ -50,17 +50,20 @@ const en: Dictionary = {
 
     "location.pickOnMap": "Pick the address on the map",
     "location.street": "Street and building number",
-    "location.apartment": "Apartment number (optional)",
+    "location.apartment": "Apt. (optional)",
     "location.apartmentPlaceholder": "e.g. 12",
     "location.apartmentShort": "apt.",
     "location.zip": "Postal code",
     "location.city": "City",
+    "location.country": "Country",
 
     "map.title": "Pin the building on the map",
     "map.hint": "Click on the map to drop a pin.",
     "map.error": "Could not fetch the address. Try picking another place.",
     "map.noAddress": "No address found at this place.",
     "map.locate": "Use my location",
+    "map.locateError": "Could not get your location. Allow location access in your browser or pick a place on the map.",
+    "map.unsupportedCountry": "This country is not supported. Pick a place in the Netherlands, Germany or Belgium.",
     "map.cancel": "Cancel",
     "map.use": "Use this address",
 

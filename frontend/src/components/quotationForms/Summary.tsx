@@ -10,6 +10,7 @@ import {
 } from 'react-icons/bs';
 
 import { useTranslation } from '../../i18n';
+import { keepInputFocus } from '../../lib/utils';
 import { redirectToSection } from '../../quotationStore';
 import { REPAIR_OPTIONS } from './repairOptions';
 
@@ -60,7 +61,7 @@ const CONTACT_METHODS = [
 
 export default function Summary() {
     const { getValues } = useFormContext();
-    const { t } = useTranslation();
+    const { t, language } = useTranslation();
 
     const repairs = REPAIR_OPTIONS.filter((o) => getValues(o.name));
     const contactMethods = CONTACT_METHODS.filter((m) => getValues(m.name));
@@ -117,12 +118,16 @@ export default function Summary() {
                             `, ${t("location.apartmentShort")} ${getValues("apartmentNumber")}`}
                         <br />
                         {getValues("zipCode")} {getValues("city")}
+                        <br />
+                        {new Intl.DisplayNames([language], { type: "region" }).of(
+                            getValues("country"),
+                        )}
                     </address>
                 </SummaryCard>
             </div>
-            <div className="sticky bottom-0 bg-white">
+            <div className="sticky-footer" onMouseDown={keepInputFocus}>
                 <div className="divider " />
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4">
                     <input
                         type="button"
                         className="btn"

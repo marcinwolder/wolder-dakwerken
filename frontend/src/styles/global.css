@@ -18,3 +18,22 @@
 * {
     font-family: "Inter", sans-serif;
 }
+
+/*
+ * Bar with the step buttons, fixed to the bottom of the screen. A fixed bar touching the edge
+ * lets mobile Safari extend its color under the translucent bottom toolbar, so scrolled content
+ * does not show through. The form reserves space below its fields (`form-with-footer`).
+ */
+.sticky-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: white;
+    padding: 0 1rem calc(1rem + env(safe-area-inset-bottom));
+}
+
+.form-with-footer {
+    padding-bottom: 8rem;
+}

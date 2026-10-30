@@ -50,11 +50,12 @@ const de: Dictionary = {
 
     "location.pickOnMap": "Adresse auf der Karte wählen",
     "location.street": "Straße und Hausnummer",
-    "location.apartment": "Wohnungsnummer (optional)",
+    "location.apartment": "Whg. (optional)",
     "location.apartmentPlaceholder": "z. B. 12",
     "location.apartmentShort": "Whg.",
     "location.zip": "Postleitzahl",
     "location.city": "Ort",
+    "location.country": "Land",
 
     "map.title": "Gebäude auf der Karte markieren",
     "map.hint": "Klicke auf die Karte, um eine Markierung zu setzen.",
@@ -62,6 +63,8 @@ const de: Dictionary = {
         "Die Adresse konnte nicht abgerufen werden. Versuche einen anderen Ort.",
     "map.noAddress": "An diesem Ort wurde keine Adresse gefunden.",
     "map.locate": "Meinen Standort verwenden",
+    "map.locateError": "Standort konnte nicht ermittelt werden. Erlaube den Standortzugriff im Browser oder wähle einen Ort auf der Karte.",
+    "map.unsupportedCountry": "Dieses Land wird nicht unterstützt. Wähle einen Ort in den Niederlanden, Deutschland oder Belgien.",
     "map.cancel": "Abbrechen",
     "map.use": "Diese Adresse verwenden",
 

@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { BsChatSquareText, BsEnvelopeAt, BsWhatsapp } from 'react-icons/bs';
 
 import { useErrorText, useTranslation } from '../../i18n';
+import { keepInputFocus } from '../../lib/utils';
 import { $currentSection, redirectToSection } from '../../quotationStore';
 import FormCheckbox from '../FormCheckbox';
 import FormInput from '../FormInput';
@@ -21,11 +22,13 @@ export default function ContactInfo() {
             <div className="flex gap-2">
                 <FormInput
                     id="firstName"
+                    autoComplete="given-name"
                     name={t("contact.firstName")}
                     placeholder={t("contact.firstNamePlaceholder")}
                 />
                 <FormInput
                     id="lastName"
+                    autoComplete="family-name"
                     name={t("contact.lastName")}
                     placeholder={t("contact.lastNamePlaceholder")}
                 />
@@ -33,10 +36,10 @@ export default function ContactInfo() {
             <PhoneInput
                 id="phoneNumber"
                 name={t("contact.phone")}
-                placeholder="111 222 333"
             />
             <FormInput
                 id="email"
+                autoComplete="email"
                 name={t("contact.email")}
                 type="email"
                 placeholder={t("contact.emailPlaceholder")}
@@ -75,11 +78,11 @@ export default function ContactInfo() {
                     </p>
                 )}
             </fieldset>
-            <div className="sticky bottom-0">
+            <div className="sticky-footer" onMouseDown={keepInputFocus}>
                 <div className="divider" />
                 <input
                     type="button"
-                    className="btn btn-secondary mb-4 w-full"
+                    className="btn btn-secondary w-full"
                     value={t("button.next")}
                     onClick={async () => {
                         const isSetepValid = await trigger(

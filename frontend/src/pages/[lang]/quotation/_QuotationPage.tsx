@@ -22,14 +22,19 @@ import Summary from '../../../components/quotationForms/Summary';
 import { ADDITIONAL_INFO_MAX_LENGTH } from '../../../components/quotationForms/repairOptions';
 import { type Language, type TranslationKey, useTranslation } from '../../../i18n';
 import I18nProvider from '../../../i18n/I18nProvider';
+import {
+    ADDRESS_COUNTRIES,
+    ADDRESS_COUNTRY_FOR_LANGUAGE,
+    isValidPostalCode,
+} from '../../../i18n/country';
 
 // Messages are translation keys (see `useErrorText`), so they are translated when shown.
 const REQUIRED_ERROR_MESSAGE: TranslationKey = "error.required";
 
 const quotationSchema = z
     .object({
-        firstName: z.string().min(1, REQUIRED_ERROR_MESSAGE),
-        lastName: z.string().min(1, REQUIRED_ERROR_MESSAGE),
+        firstName: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
+        lastName: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
         phoneNumber: z
             .string()
             .trim()
@@ -57,19 +62,21 @@ const quotationSchema = z
             .trim()
             .max(ADDITIONAL_INFO_MAX_LENGTH, "error.tooLong" satisfies TranslationKey)
             .optional(),
-        streetName: z.string().min(1, REQUIRED_ERROR_MESSAGE),
+        country: z.enum(ADDRESS_COUNTRIES),
+        streetName: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
         apartmentNumber: z.string().trim().optional(),
-        zipCode: z
-            .string()
-            .trim()
-            .min(1, REQUIRED_ERROR_MESSAGE)
-            // PL "00-000", DE/other 5 digits, NL "1234 AB", BE/AT/CH 4 digits.
-            .regex(
-                /^(\d\d-\d\d\d|\d{4,5}|\d{4}\s?[A-Za-z]{2})$/,
-                "error.zipInvalid" satisfies TranslationKey,
-            ),
-        city: z.string().min(1, REQUIRED_ERROR_MESSAGE),
+        // The format depends on the country, so it is checked in the refine below.
+        zipCode: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
+        city: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
     })
+    .refine(
+        (data) => !data.zipCode || isValidPostalCode(data.country, data.zipCode),
+        {
+            error: "error.zipInvalid" satisfies TranslationKey,
+            path: ["zipCode"],
+            when: () => true,
+        },
+    )
     .refine(
         (data) => data.contactEmail || data.contactSms || data.contactWhatsapp,
         {
@@ -106,10 +113,11 @@ export default function Quotation(props: { lang: Language }) {
 }
 
 function QuotationForm() {
+    const { language } = useTranslation();
     const methods = useForm<QuotationFormData>({
         resolver: zodResolver(quotationSchema),
         // Controlled fields (e.g. PhoneInput) have no DOM value to fall back on, so they need explicit defaults.
-        defaultValues: { phoneNumber: "" },
+        defaultValues: { phoneNumber: "", country: ADDRESS_COUNTRY_FOR_LANGUAGE[language] },
     });
     const { handleSubmit } = methods;
     const currentSection = useStore($currentSection);
@@ -122,6 +130,26 @@ function QuotationForm() {
         const onPopState = () => syncSectionWithUrl();
         window.addEventListener("popstate", onPopState);
         return () => window.removeEventListener("popstate", onPopState);
+    }, []);
+
+    useEffect(() => {
+        // iOS Safari keeps the page shifted after the keyboard closes (e.g. after autofill) and
+        // then taps on `position: fixed` elements miss until the page scrolls. A tiny scroll fixes it.
+        let timeout: ReturnType<typeof setTimeout>;
+        const nudgeScroll = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                window.scrollBy(0, 1);
+                window.scrollBy(0, -1);
+            }, 150);
+        };
+        document.addEventListener("focusout", nudgeScroll);
+        window.visualViewport?.addEventListener("resize", nudgeScroll);
+        return () => {
+            clearTimeout(timeout);
+            document.removeEventListener("focusout", nudgeScroll);
+            window.visualViewport?.removeEventListener("resize", nudgeScroll);
+        };
     }, []);
 
     return (
@@ -159,7 +187,7 @@ function QuotationForm() {
                             // TODO: Send the quotation to the backend once an endpoint exists.
                             console.log(data);
                         })}
-                        className="flex flex-col justify-center">
+                        className="flex flex-col justify-center form-with-footer">
                         {currentSection === 1 && <ContactInfo />}
                         {currentSection === 2 && <RepairDetails />}
                         {currentSection === 3 && <LocationDetails />}
