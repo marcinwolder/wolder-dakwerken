@@ -186,7 +186,7 @@ export default function MapPicker({
     return (
         <dialog className="modal modal-open" onClose={onClose}>
             <div className="modal-box p-4 max-w-2xl">
-                <h3 className="text-lg font-bold mb-3">
+                <h3 className="text-2xl font-bold mb-3">
                     {t("map.title")}
                 </h3>
                 <div className="h-80 rounded-box overflow-hidden relative z-0">
@@ -220,16 +220,16 @@ export default function MapPicker({
                 <div className="modal-action grid grid-cols-2 gap-2">
                     <button
                         type="button"
-                        className="btn col-span-2"
+                        className="btn btn-lg rounded-3xl font-bold col-span-2"
                         onClick={locateMe}>
                         {t("map.locate")}
                     </button>
-                    <button type="button" className="btn" onClick={onClose}>
+                    <button type="button" className="btn btn-lg btn-ghost border-primary rounded-3xl font-bold" onClick={onClose}>
                         {t("map.cancel")}
                     </button>
                     <button
                         type="button"
-                        className="btn btn-secondary"
+                        className="btn btn-lg btn-secondary rounded-3xl font-bold"
                         disabled={!address || !addressText}
                         onClick={() => address && onSelect(address)}>
                         {t("map.use")}

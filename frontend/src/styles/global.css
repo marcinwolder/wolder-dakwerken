@@ -35,5 +35,24 @@
 }
 
 .form-with-footer {
-    padding-bottom: 8rem;
+    padding-bottom: 9.5rem;
+}
+
+/* Landing page look: big rounded shapes, thick black borders, bold labels. */
+:root {
+    --radius-selector: 1rem;
+    --radius-field: 0.75rem;
+    --radius-box: 1.5rem;
+    --border: 2px;
+}
+
+.fieldset > .label,
+.fieldset legend.label {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.fieldset > .label:not(.text-error),
+.fieldset legend.label:not(.text-error) {
+    color: inherit;
 }

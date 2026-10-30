@@ -46,7 +46,7 @@ const FormInput: React.FC<
             <input
                 type={type}
                 id={id}
-                className={classNames("input w-full", {
+                className={classNames("input input-lg w-full", {
                     "input-error": isError,
                 })}
                 autoComplete={autoComplete}

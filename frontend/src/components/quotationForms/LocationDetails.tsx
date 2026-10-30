@@ -49,7 +49,7 @@ export default function LocationDetails() {
             <div className="flex flex-col mt-4">
                 <button
                     type="button"
-                    className="btn btn-outline w-full mb-2"
+                    className="btn btn-lg btn-outline border-primary w-full mb-2 font-bold"
                     onClick={() => setIsMapOpen(true)}>
                     <FaMapMarkerAlt />
                     {t("location.pickOnMap")}
@@ -60,7 +60,7 @@ export default function LocationDetails() {
                     </label>
                     <select
                         id="country"
-                        className="select w-full"
+                        className="select select-lg w-full"
                         autoComplete="country"
                         {...countryRegistration}
                         onChange={(e) => {
@@ -122,11 +122,11 @@ export default function LocationDetails() {
                 </Suspense>
             )}
             <div className="sticky-footer" onMouseDown={keepInputFocus}>
-                <div className="divider " />
+                <div className="divider" />
                 <div className="grid grid-cols-2 gap-4">
                     <input
                         type="button"
-                        className="btn"
+                        className="btn btn-lg rounded-3xl shadow-lg font-bold px-2 text-sm sm:text-base btn-ghost border-primary"
                         value={t("button.previous")}
                         onClick={() => {
                             redirectToSection(2);
@@ -134,7 +134,7 @@ export default function LocationDetails() {
                     />
                     <input
                         type="button"
-                        className="btn btn-secondary"
+                        className="btn btn-lg rounded-3xl shadow-lg font-bold px-2 text-sm sm:text-base btn-secondary"
                         value={t("button.next")}
                         onClick={async () => {
                             const isCorrect = await trigger(['country', 'streetName', 'zipCode', 'city']);

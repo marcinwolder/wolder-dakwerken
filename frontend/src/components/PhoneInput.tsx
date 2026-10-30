@@ -220,7 +220,7 @@ export default function PhoneInput(props: {
                     type="button"
                     aria-label={t("phone.choosePrefix")}
                     aria-expanded={isOpen}
-                    className={classNames("btn px-3 font-normal", {
+                    className={classNames("btn btn-lg px-3 font-normal", {
                         "btn-error btn-outline": isError,
                     })}
                     onClick={() => setIsOpen((open) => !open)}>
@@ -234,7 +234,7 @@ export default function PhoneInput(props: {
                     type="tel"
                     autoComplete="tel-national"
                     enterKeyHint="next"
-                    className={classNames("input w-full", {
+                    className={classNames("input input-lg w-full", {
                         "input-error": isError,
                     })}
                     placeholder={props.placeholder ?? examplePlaceholder(country)}

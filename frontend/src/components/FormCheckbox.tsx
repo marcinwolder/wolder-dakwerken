@@ -31,7 +31,7 @@ const FormCheckbox: React.FC<
                     clearErrors(clearId ?? id);
                 }}
             />
-            <span className="peer-checked:text-primary">{name}</span>
+            <span className="text-base font-bold peer-checked:text-primary">{name}</span>
             {children}
         </label>
     );
