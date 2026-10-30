@@ -55,6 +55,7 @@ const de: Dictionary = {
     "location.apartmentShort": "Whg.",
     "location.zip": "Postleitzahl",
     "location.city": "Ort",
+    "location.country": "Land",
 
     "map.title": "Gebäude auf der Karte markieren",
     "map.hint": "Klicke auf die Karte, um eine Markierung zu setzen.",
@@ -63,6 +64,7 @@ const de: Dictionary = {
     "map.noAddress": "An diesem Ort wurde keine Adresse gefunden.",
     "map.locate": "Meinen Standort verwenden",
     "map.locateError": "Standort konnte nicht ermittelt werden. Erlaube den Standortzugriff im Browser oder wähle einen Ort auf der Karte.",
+    "map.unsupportedCountry": "Dieses Land wird nicht unterstützt. Wähle einen Ort in den Niederlanden, Deutschland oder Belgien.",
     "map.cancel": "Abbrechen",
     "map.use": "Diese Adresse verwenden",
 

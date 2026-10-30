@@ -61,7 +61,7 @@ const CONTACT_METHODS = [
 
 export default function Summary() {
     const { getValues } = useFormContext();
-    const { t } = useTranslation();
+    const { t, language } = useTranslation();
 
     const repairs = REPAIR_OPTIONS.filter((o) => getValues(o.name));
     const contactMethods = CONTACT_METHODS.filter((m) => getValues(m.name));
@@ -118,6 +118,10 @@ export default function Summary() {
                             `, ${t("location.apartmentShort")} ${getValues("apartmentNumber")}`}
                         <br />
                         {getValues("zipCode")} {getValues("city")}
+                        <br />
+                        {new Intl.DisplayNames([language], { type: "region" }).of(
+                            getValues("country"),
+                        )}
                     </address>
                 </SummaryCard>
             </div>

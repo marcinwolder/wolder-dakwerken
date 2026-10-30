@@ -22,11 +22,13 @@ export default function ContactInfo() {
             <div className="flex gap-2">
                 <FormInput
                     id="firstName"
+                    autoComplete="given-name"
                     name={t("contact.firstName")}
                     placeholder={t("contact.firstNamePlaceholder")}
                 />
                 <FormInput
                     id="lastName"
+                    autoComplete="family-name"
                     name={t("contact.lastName")}
                     placeholder={t("contact.lastNamePlaceholder")}
                 />
@@ -34,10 +36,10 @@ export default function ContactInfo() {
             <PhoneInput
                 id="phoneNumber"
                 name={t("contact.phone")}
-                placeholder="111 222 333"
             />
             <FormInput
                 id="email"
+                autoComplete="email"
                 name={t("contact.email")}
                 type="email"
                 placeholder={t("contact.emailPlaceholder")}

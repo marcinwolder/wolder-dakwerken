@@ -24,6 +24,7 @@ export default defineConfig({
         'classnames',
         'leaflet',
         'libphonenumber-js',
+        'libphonenumber-js/mobile/examples',
         'nanostores',
         'react-dom/server',
         'react-hook-form',

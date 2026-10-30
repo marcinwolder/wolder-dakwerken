@@ -4,8 +4,10 @@ import {
     type CountryCode,
     getCountries,
     getCountryCallingCode,
+    getExampleNumber,
     parsePhoneNumberFromString,
 } from 'libphonenumber-js';
+import examples from 'libphonenumber-js/mobile/examples';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { FaChevronDown } from 'react-icons/fa';
@@ -51,16 +53,44 @@ const countriesFor = (language: Language) => {
     return countries;
 };
 
+// Calling codes shared by many countries: the main one, instead of the first in the alphabet.
+const MAIN_COUNTRY_FOR_CALLING_CODE: Record<string, CountryCode> = {
+    "1": "US",
+    "7": "RU",
+    "39": "IT",
+    "44": "GB",
+    "47": "NO",
+    "61": "AU",
+    "212": "MA",
+    "262": "RE",
+    "290": "SH",
+    "358": "FI",
+    "590": "GP",
+    "599": "CW",
+};
+
 const countryForCallingCode = (
     callingCode: string,
     fallback: CountryCode,
     preferred?: CountryCode,
-) =>
-    preferred && getCountryCallingCode(preferred) === callingCode
-        ? preferred
-        : (getCountries().find(
-              (c) => getCountryCallingCode(c) === callingCode,
-          ) ?? fallback);
+) => {
+    if (preferred && getCountryCallingCode(preferred) === callingCode) {
+        return preferred;
+    }
+    // Keep the current country when the prefix still fits it (e.g. Jersey stays "+44").
+    if (getCountryCallingCode(fallback) === callingCode) {
+        return fallback;
+    }
+    return (
+        MAIN_COUNTRY_FOR_CALLING_CODE[callingCode] ??
+        getCountries().find((c) => getCountryCallingCode(c) === callingCode) ??
+        fallback
+    );
+};
+
+// National format of a sample mobile number of the country, e.g. "0151 23456789" in DE.
+const examplePlaceholder = (country: CountryCode) =>
+    getExampleNumber(country, examples)?.formatNational();
 
 function initialState(
     value: string | undefined,
@@ -127,11 +157,14 @@ export default function PhoneInput(props: {
         const digits = nextText.replace(/\D/g, "");
         if (!digits) {
             field.onChange("");
-        } else if (nextText.trim().startsWith("+")) {
-            field.onChange(`+${digits}`);
-        } else {
-            field.onChange(`+${getCountryCallingCode(nextCountry)}${digits}`);
+            return;
         }
+        const raw = nextText.trim().startsWith("+")
+            ? `+${digits}`
+            : `+${getCountryCallingCode(nextCountry)}${digits}`;
+        // A valid number is stored in E.164, which drops the national trunk "0" ("0151..." in DE).
+        const parsed = parsePhoneNumberFromString(raw);
+        field.onChange(parsed?.isValid() ? parsed.number : raw);
     };
 
     const handleInput = (raw: string) => {
@@ -204,7 +237,7 @@ export default function PhoneInput(props: {
                     className={classNames("input w-full", {
                         "input-error": isError,
                     })}
-                    placeholder={props.placeholder}
+                    placeholder={props.placeholder ?? examplePlaceholder(country)}
                     value={text}
                     onBlur={field.onBlur}
                     onChange={(e) => handleInput(e.target.value)}

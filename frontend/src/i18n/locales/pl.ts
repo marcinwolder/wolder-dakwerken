@@ -53,6 +53,7 @@ const pl = {
     "location.apartmentShort": "m.",
     "location.zip": "Kod pocztowy",
     "location.city": "Miejscowość",
+    "location.country": "Kraj",
 
     "map.title": "Wskaż budynek na mapie",
     "map.hint": "Kliknij na mapie, aby postawić pineskę.",
@@ -60,6 +61,7 @@ const pl = {
     "map.noAddress": "Nie znaleziono adresu w tym miejscu.",
     "map.locate": "Użyj mojej lokalizacji",
     "map.locateError": "Nie udało się ustalić lokalizacji. Zezwól przeglądarce na dostęp do lokalizacji lub wskaż miejsce na mapie.",
+    "map.unsupportedCountry": "Ten kraj nie jest obsługiwany. Wskaż miejsce w Holandii, Niemczech lub Belgii.",
     "map.cancel": "Anuluj",
     "map.use": "Użyj tego adresu",
 
