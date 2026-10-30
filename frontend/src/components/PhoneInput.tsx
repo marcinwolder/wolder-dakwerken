@@ -10,8 +10,8 @@ import { useMemo, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { FaChevronDown } from 'react-icons/fa';
 
-const DEFAULT_COUNTRY: CountryCode = "PL";
-const PINNED_COUNTRIES: CountryCode[] = ["PL", "NL", "DE"];
+const DEFAULT_COUNTRY: CountryCode = "PL";  // TODO: Add automatic country detection
+const PINNED_COUNTRIES: CountryCode[] = ["PL", "NL", "DE"];  // TODO: Sync this with supported languages
 
 const flagUrl = (country: CountryCode) =>
     `https://purecatamphetamine.github.io/country-flag-icons/3x2/${country}.svg`;
@@ -48,7 +48,7 @@ const countryForCallingCode = (callingCode: string, preferred?: CountryCode) =>
     preferred && getCountryCallingCode(preferred) === callingCode
         ? preferred
         : (COUNTRIES.find((c) => c.callingCode === callingCode)?.code ??
-          DEFAULT_COUNTRY);
+            DEFAULT_COUNTRY);
 
 function initialState(value: string | undefined): {
     country: CountryCode;
