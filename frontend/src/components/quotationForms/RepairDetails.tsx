@@ -19,7 +19,7 @@ function Checkbox(props: { label: string; name: string }) {
         <input
             type="checkbox"
             aria-label={props.label}
-            className="btn w-full h-auto aspect-4/3"
+            className="btn btn-lg rounded-3xl w-full h-auto aspect-4/3 text-base font-bold shadow-md"
             {...registration}
             onChange={(e) => {
                 registration.onChange(e);
@@ -73,7 +73,7 @@ export default function RepairDetails() {
                 <textarea
                     id="additionalInfo"
                     rows={4}
-                    className={classNames("textarea w-full resize-none", {
+                    className={classNames("textarea textarea-lg w-full resize-none", {
                         "textarea-error": isInfoError,
                     })}
                     placeholder={t("repair.additionalPlaceholder")}
@@ -90,11 +90,11 @@ export default function RepairDetails() {
                 )}
             </fieldset>
             <div className="sticky-footer" onMouseDown={keepInputFocus}>
-                <div className="divider " />
+                <div className="divider" />
                 <div className="grid grid-cols-2 gap-4">
                     <input
                         type="button"
-                        className="btn"
+                        className="btn btn-lg rounded-3xl shadow-lg font-bold px-2 text-sm sm:text-base btn-ghost border-primary"
                         value={t("button.previous")}
                         onClick={() => {
                             redirectToSection(1);
@@ -102,7 +102,7 @@ export default function RepairDetails() {
                     />
                     <input
                         type="button"
-                        className="btn btn-secondary"
+                        className="btn btn-lg rounded-3xl shadow-lg font-bold px-2 text-sm sm:text-base btn-secondary"
                         value={t("button.next")}
                         onClick={async () => {
                             const isSetepValid = await trigger([...REPAIR_NAMES, "additionalInfo"], {

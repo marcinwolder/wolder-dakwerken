@@ -46,7 +46,7 @@ export default function ContactInfo() {
             />
             <fieldset
                 className={classNames(
-                    "fieldset bg-base-100 border-base-300 rounded-box w-full border p-4 mt-2",
+                    "fieldset bg-base-100 border-base-300 rounded-box w-full border-2 p-4 mt-2",
                     { "border-error": isContactError },
                 )}>
                 <legend
@@ -57,19 +57,19 @@ export default function ContactInfo() {
                 </legend>
                 <div className="grid grid-cols-3">
                     <FormCheckbox id="contactWhatsapp" name="WhatsApp">
-                        <BsWhatsapp className="text-4xl peer-checked:text-primary peer-checked:scale-110 transition-all" />
+                        <BsWhatsapp className="text-5xl peer-checked:text-primary peer-checked:scale-110 transition-all" />
                     </FormCheckbox>
                     <FormCheckbox
                         id="contactEmail"
                         name="Email"
                         clearId="contactWhatsapp">
-                        <BsEnvelopeAt className="text-4xl peer-checked:text-primary peer-checked:scale-110 transition-all" />
+                        <BsEnvelopeAt className="text-5xl peer-checked:text-primary peer-checked:scale-110 transition-all" />
                     </FormCheckbox>
                     <FormCheckbox
                         id="contactSms"
                         name="SMS"
                         clearId="contactWhatsapp">
-                        <BsChatSquareText className="text-4xl peer-checked:text-primary peer-checked:scale-110 transition-all" />
+                        <BsChatSquareText className="text-5xl peer-checked:text-primary peer-checked:scale-110 transition-all" />
                     </FormCheckbox>
                 </div>
                 {isContactError && (
@@ -82,7 +82,7 @@ export default function ContactInfo() {
                 <div className="divider" />
                 <input
                     type="button"
-                    className="btn btn-secondary w-full"
+                    className="btn btn-lg rounded-3xl shadow-lg font-bold px-2 text-sm sm:text-base btn-secondary w-full"
                     value={t("button.next")}
                     onClick={async () => {
                         const isSetepValid = await trigger(

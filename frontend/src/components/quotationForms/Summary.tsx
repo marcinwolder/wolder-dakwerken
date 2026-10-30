@@ -22,16 +22,16 @@ function SummaryCard(props: {
 }) {
     const { t } = useTranslation();
     return (
-        <section className="card card-border bg-base-100 border-base-300">
+        <section className="card card-border bg-base-100 border-primary shadow-lg">
             <div className="card-body p-4 gap-3">
                 <div className="flex items-center gap-3">
                     <span className="text-2xl text-secondary">
                         {props.icon}
                     </span>
-                    <h3 className="card-title text-base grow">{props.title}</h3>
+                    <h3 className="card-title text-xl grow">{props.title}</h3>
                     <button
                         type="button"
-                        className="btn btn-ghost btn-sm"
+                        className="btn btn-ghost font-bold"
                         onClick={() => redirectToSection(props.step)}>
                         {t("button.edit")}
                     </button>
@@ -45,7 +45,7 @@ function SummaryCard(props: {
 function Field(props: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col">
-            <dt className="text-xs uppercase tracking-wide opacity-60">
+            <dt className="text-sm uppercase tracking-wide opacity-60">
                 {props.label}
             </dt>
             <dd className="font-medium break-words">{props.children}</dd>
@@ -81,7 +81,7 @@ export default function Summary() {
                                 {contactMethods.map((m) => (
                                     <span
                                         key={m.name}
-                                        className="badge badge-secondary gap-1">
+                                        className="badge badge-secondary badge-lg gap-1">
                                         {m.icon}
                                         {m.label}
                                     </span>
@@ -95,7 +95,7 @@ export default function Summary() {
                         {repairs.map((r) => (
                             <li
                                 key={r.name}
-                                className="badge badge-outline h-auto py-1">
+                                className="badge badge-outline badge-lg h-auto py-1">
                                 {t(r.label)}
                             </li>
                         ))}
@@ -126,11 +126,11 @@ export default function Summary() {
                 </SummaryCard>
             </div>
             <div className="sticky-footer" onMouseDown={keepInputFocus}>
-                <div className="divider " />
+                <div className="divider" />
                 <div className="grid grid-cols-2 gap-4">
                     <input
                         type="button"
-                        className="btn"
+                        className="btn btn-lg rounded-3xl shadow-lg font-bold px-2 text-sm sm:text-base btn-ghost border-primary"
                         value={t("button.previous")}
                         onClick={() => {
                             redirectToSection(3);
@@ -138,7 +138,7 @@ export default function Summary() {
                     />
                     <input
                         type="submit"
-                        className="btn btn-secondary"
+                        className="btn btn-lg rounded-3xl shadow-lg font-bold px-2 text-sm sm:text-base btn-secondary"
                         value={t("button.submit")}
                     />
                 </div>
