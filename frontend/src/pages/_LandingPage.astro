@@ -1,0 +1,63 @@
+---
+import { FaAnglesDown } from "react-icons/fa6";
+
+import Logo from "../assets/logo_shrink.png";
+import AnimatedHouse from "../components/AnimatedHouse";
+---
+
+<div class="flex justify-center mb-8">
+    <img
+        src={Logo.src}
+        alt="Logo"
+        class="w-70 brightness-0 drop-shadow-sm drop-shadow-gray-300"
+    />
+</div>
+<div class="font-bold flex flex-col w-fit mx-auto my-8">
+    <span class="text-4xl">NIECH ZGADNĘ</span>
+    <span class="text-xl">
+        <span>MUSISZ WYMIENIĆ </span>
+        <span class="text-rotate">
+            <span class="text-secondary">
+                <span>OKNA?</span>
+                <span>RYNNY?</span>
+                <span>DACHÓWKI?</span>
+            </span>
+        </span>
+    </span>
+</div>
+<div class="flex my-12 mx-auto w-fit">
+    <AnimatedHouse client:load />
+    <div class="flex flex-col items-end w-fit font-bold text-2xl">
+        <span>TRAFIŁEŚ W </span>
+        <span class="text-accent">IDEALNE</span>
+        <span>MIEJSCE!</span>
+    </div>
+</div>
+<div class="flex justify-center">
+    <a
+        href="/quotation"
+        class="btn btn-xl btn-ghost w-[80vw] border-2 border-primary rounded-3xl shadow-lg font-bold">
+        UMÓW WYCENĘ
+    </a>
+</div>
+<div class="flex flex-col items-center m-8">
+    <span class="flex gap-4 items-center mb-4">
+        ZOBACZ MOJĄ PRACĘ{" "}
+        <FaAnglesDown className="animate-bounce" />
+    </span>
+    <figure class="diff aspect-video" tabindex="0">
+        <div class="diff-item-1" role="img" tabindex="0">
+            <img
+                alt="daisy"
+                src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp"
+            />
+        </div>
+        <div class="diff-item-2" role="img">
+            <img
+                alt="daisy"
+                src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp"
+            />
+        </div>
+        <div class="diff-resizer"></div>
+    </figure>
+</div>

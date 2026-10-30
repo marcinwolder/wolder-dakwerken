@@ -1,0 +1,25 @@
+---
+import LanguagePicker from "./LanguagePicker.astro"
+import HamburgerMenu from "./HamburgerMenu.astro"
+import logo from "../assets/logo_shrink.png"
+---
+<div class="grid grid-cols-3 items-center">
+    <div class="justify-self-start">
+        <LanguagePicker />
+    </div>
+    <div class="flex justify-center">
+        <a href="/">
+            <img
+                src={logo.src}
+                alt="logo"
+                class:list={[
+                    "w-16 brightness-0 drop-shadow-sm drop-shadow-gray-300",
+                    { hidden: Astro.url.pathname === "/" },
+                ]}
+            />
+        </a>
+    </div>
+    <div class="justify-self-end">
+        <HamburgerMenu />
+    </div>
+</div>
