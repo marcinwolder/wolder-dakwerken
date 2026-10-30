@@ -3,11 +3,11 @@ import { atom } from 'nanostores';
 import { clamp } from './lib/utils';
 
 export const STEPS = [
-    "Dane kontaktowe",
-    "Rodzaj naprawy",
-    "Szczegóły",
-    "Podsumo­wanie",
-];
+    "step.contact",
+    "step.repair",
+    "step.details",
+    "step.summary",
+] as const;
 
 export const $currentSection = atom<number>(1);
 // Furthest step the user reached by passing validation. Steps beyond it cannot be opened via the URL.

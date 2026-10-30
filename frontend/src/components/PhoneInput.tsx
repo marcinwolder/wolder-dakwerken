@@ -6,61 +6,77 @@ import {
     getCountryCallingCode,
     parsePhoneNumberFromString,
 } from 'libphonenumber-js';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { FaChevronDown } from 'react-icons/fa';
 
-const DEFAULT_COUNTRY: CountryCode = "PL";  // TODO: Add automatic country detection
-const PINNED_COUNTRIES: CountryCode[] = ["PL", "NL", "DE"];  // TODO: Sync this with supported languages
+import {
+    LANGUAGES,
+    type Language,
+    useErrorText,
+    useTranslation,
+} from '../i18n';
+import { LANGUAGE_COUNTRY } from '../i18n/country';
+import Flag from './Flag';
 
-const flagUrl = (country: CountryCode) =>
-    `https://purecatamphetamine.github.io/country-flag-icons/3x2/${country}.svg`;
+const PINNED_COUNTRIES: CountryCode[] = LANGUAGES.map((l) => l.country);
 
-function Flag({ country }: { country: CountryCode }) {
-    return (
-        <img
-            src={flagUrl(country)}
-            alt=""
-            loading="lazy"
-            className="h-4 w-6 rounded-xs object-cover shadow-sm"
-        />
-    );
+// Country names and their order depend on the language, so the list is built per language.
+function buildCountries(language: Language) {
+    const regionNames = new Intl.DisplayNames([language], { type: "region" });
+    return getCountries()
+        .map((code) => ({
+            code,
+            name: regionNames.of(code) ?? code,
+            callingCode: getCountryCallingCode(code),
+        }))
+        .sort((a, b) => {
+            const pinA = PINNED_COUNTRIES.indexOf(a.code);
+            const pinB = PINNED_COUNTRIES.indexOf(b.code);
+            if (pinA !== -1 || pinB !== -1) {
+                return (pinA === -1 ? 99 : pinA) - (pinB === -1 ? 99 : pinB);
+            }
+            return a.name.localeCompare(b.name, language);
+        });
 }
 
-const regionNames = new Intl.DisplayNames(["pl"], { type: "region" });
+const countriesCache = new Map<Language, ReturnType<typeof buildCountries>>();
 
-const COUNTRIES = getCountries()
-    .map((code) => ({
-        code,
-        name: regionNames.of(code) ?? code,
-        callingCode: getCountryCallingCode(code),
-    }))
-    .sort((a, b) => {
-        const pinA = PINNED_COUNTRIES.indexOf(a.code);
-        const pinB = PINNED_COUNTRIES.indexOf(b.code);
-        if (pinA !== -1 || pinB !== -1) {
-            return (pinA === -1 ? 99 : pinA) - (pinB === -1 ? 99 : pinB);
-        }
-        return a.name.localeCompare(b.name, "pl");
-    });
+const countriesFor = (language: Language) => {
+    let countries = countriesCache.get(language);
+    if (!countries) {
+        countries = buildCountries(language);
+        countriesCache.set(language, countries);
+    }
+    return countries;
+};
 
-const countryForCallingCode = (callingCode: string, preferred?: CountryCode) =>
+const countryForCallingCode = (
+    callingCode: string,
+    fallback: CountryCode,
+    preferred?: CountryCode,
+) =>
     preferred && getCountryCallingCode(preferred) === callingCode
         ? preferred
-        : (COUNTRIES.find((c) => c.callingCode === callingCode)?.code ??
-            DEFAULT_COUNTRY);
+        : (getCountries().find(
+              (c) => getCountryCallingCode(c) === callingCode,
+          ) ?? fallback);
 
-function initialState(value: string | undefined): {
+function initialState(
+    value: string | undefined,
+    defaultCountry: CountryCode,
+): {
     country: CountryCode;
     text: string;
 } {
     const parsed = value ? parsePhoneNumberFromString(value) : undefined;
     if (!parsed) {
-        return { country: DEFAULT_COUNTRY, text: "" };
+        return { country: defaultCountry, text: "" };
     }
     return {
         country: countryForCallingCode(
             parsed.countryCallingCode,
+            defaultCountry,
             parsed.country,
         ),
         text: parsed.nationalNumber,
@@ -71,6 +87,7 @@ function initialState(value: string | undefined): {
  * Phone input with a country prefix dropdown. The form value is the full
  * international number without spaces (e.g. "+48123456789").
  * Typing a full prefix like "+48" in the input moves it to the dropdown.
+ * The country is preselected from the page language.
  */
 export default function PhoneInput(props: {
     id: string;
@@ -82,14 +99,29 @@ export default function PhoneInput(props: {
         fieldState: { error },
     } = useController({ name: props.id });
     const { clearErrors } = useFormContext();
+    const { t, language } = useTranslation();
+    const errorText = useErrorText();
+    const countries = countriesFor(language);
     const [{ country, text }, setState] = useState(() =>
-        initialState(field.value),
+        initialState(field.value, LANGUAGE_COUNTRY[language]),
     );
+    const isCountryTouched = useRef(Boolean(field.value));
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
     const isError = Boolean(error);
 
+    // Follow the language's country until the user picks one or starts typing.
+    useEffect(() => {
+        if (!isCountryTouched.current) {
+            setState((state) => ({
+                ...state,
+                country: LANGUAGE_COUNTRY[language],
+            }));
+        }
+    }, [language]);
+
     const commit = (nextCountry: CountryCode, nextText: string) => {
+        isCountryTouched.current = true;
         setState({ country: nextCountry, text: nextText });
         clearErrors(props.id);
         const digits = nextText.replace(/\D/g, "");
@@ -111,6 +143,7 @@ export default function PhoneInput(props: {
                 commit(
                     countryForCallingCode(
                         callingCode,
+                        country,
                         typer.getCountry() ?? country,
                     ),
                     typer.getNationalNumber(),
@@ -127,15 +160,15 @@ export default function PhoneInput(props: {
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase().replace(/^\+/, "");
         if (!q) {
-            return COUNTRIES;
+            return countries;
         }
-        return COUNTRIES.filter(
+        return countries.filter(
             (c) =>
                 c.name.toLowerCase().includes(q) ||
                 c.code.toLowerCase() === q ||
                 c.callingCode.startsWith(q),
         );
-    }, [query]);
+    }, [query, countries]);
 
     const close = () => {
         setIsOpen(false);
@@ -152,7 +185,7 @@ export default function PhoneInput(props: {
             <div className="flex gap-2 relative">
                 <button
                     type="button"
-                    aria-label="Wybierz prefiks kraju"
+                    aria-label={t("phone.choosePrefix")}
                     aria-expanded={isOpen}
                     className={classNames("btn px-3 font-normal", {
                         "btn-error btn-outline": isError,
@@ -180,7 +213,7 @@ export default function PhoneInput(props: {
                     <>
                         <button
                             type="button"
-                            aria-label="Zamknij"
+                            aria-label={t("phone.close")}
                             className="fixed inset-0 z-10 cursor-default"
                             onClick={close}
                         />
@@ -189,7 +222,7 @@ export default function PhoneInput(props: {
                                 type="search"
                                 autoFocus
                                 className="input input-sm w-full mb-2"
-                                placeholder="Szukaj kraju lub prefiksu"
+                                placeholder={t("phone.search")}
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                             />
@@ -221,7 +254,7 @@ export default function PhoneInput(props: {
                                 ))}
                                 {filtered.length === 0 && (
                                     <li className="px-2 py-1.5 text-sm opacity-60">
-                                        Brak wyników
+                                        {t("phone.noResults")}
                                     </li>
                                 )}
                             </ul>
@@ -230,7 +263,7 @@ export default function PhoneInput(props: {
                 )}
             </div>
             {error && (
-                <p className="label text-error whitespace-normal">{error.message?.toString()}</p>
+                <p className="label text-error whitespace-normal">{errorText(error.message)}</p>
             )}
         </fieldset>
     );

@@ -1,10 +1,13 @@
 ---
 import "../styles/global.css";
 import NavBar from "../components/NavBar.astro";
+import type { Language } from "../i18n";
+
+const { lang } = Astro.props as { lang: Language };
 ---
 
 <!doctype html>
-<html lang={Astro.params.lang || "en"}>
+<html lang={lang}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
@@ -16,7 +19,7 @@ import NavBar from "../components/NavBar.astro";
     <body>
         <div class="m-4">
             <nav>
-                <NavBar/>
+                <NavBar lang={lang} />
             </nav>
             <slot />
         </div>

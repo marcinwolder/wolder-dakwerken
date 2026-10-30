@@ -6,6 +6,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 
+import { type Language, useTranslation } from '../../i18n';
+import { MAP_VIEWS } from '../../i18n/country';
+
 export type PickedAddress = {
     streetName: string;
     zipCode: string;
@@ -13,8 +16,6 @@ export type PickedAddress = {
 };
 
 type Coords = [number, number];
-
-const POLAND_CENTER: Coords = [52.0, 19.4];
 
 const pinIcon = L.divIcon({
     html: renderToStaticMarkup(
@@ -29,9 +30,12 @@ type NominatimResponse = {
     address?: Record<string, string>;
 };
 
-const reverseGeocode = async ([lat, lon]: Coords): Promise<PickedAddress> => {
+const reverseGeocode = async (
+    [lat, lon]: Coords,
+    language: Language,
+): Promise<PickedAddress> => {
     const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=pl&lat=${lat}&lon=${lon}`,
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=${language}&lat=${lat}&lon=${lon}`,
     );
     if (!response.ok) {
         throw new Error("Reverse geocoding failed");
@@ -77,6 +81,9 @@ export default function MapPicker({
     onSelect: (address: PickedAddress) => void;
     onClose: () => void;
 }) {
+    const { t, language } = useTranslation();
+    // Fixed per opening, so the map does not jump if the language changes meanwhile.
+    const [initialView] = useState(() => MAP_VIEWS[language]);
     const [position, setPosition] = useState<Coords | null>(null);
     const [address, setAddress] = useState<PickedAddress | null>(null);
     const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -89,7 +96,7 @@ export default function MapPicker({
         setAddress(null);
         setStatus("loading");
         try {
-            const result = await reverseGeocode(coords);
+            const result = await reverseGeocode(coords, language);
             if (requestId !== latestRequest.current) return;
             setAddress(result);
             setStatus("idle");
@@ -115,12 +122,12 @@ export default function MapPicker({
         <dialog className="modal modal-open" onClose={onClose}>
             <div className="modal-box p-4 max-w-2xl">
                 <h3 className="text-lg font-bold mb-3">
-                    Wskaż budynek na mapie
+                    {t("map.title")}
                 </h3>
                 <div className="h-80 rounded-box overflow-hidden relative z-0">
                     <MapContainer
-                        center={POLAND_CENTER}
-                        zoom={6}
+                        center={initialView.center}
+                        zoom={initialView.zoom}
                         className="h-full w-full">
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -134,31 +141,29 @@ export default function MapPicker({
                     </MapContainer>
                 </div>
                 <div className="min-h-12 mt-3 text-sm">
-                    {!position && "Kliknij na mapie, aby postawić pineskę."}
+                    {!position && t("map.hint")}
                     {status === "loading" && (
                         <span className="loading loading-dots loading-sm" />
                     )}
-                    {status === "error" &&
-                        "Nie udało się pobrać adresu. Spróbuj wskazać inne miejsce."}
-                    {address &&
-                        (addressText || "Nie znaleziono adresu w tym miejscu.")}
+                    {status === "error" && t("map.error")}
+                    {address && (addressText || t("map.noAddress"))}
                 </div>
                 <div className="modal-action grid grid-cols-2 gap-2">
                     <button
                         type="button"
                         className="btn col-span-2"
                         onClick={locateMe}>
-                        Użyj mojej lokalizacji
+                        {t("map.locate")}
                     </button>
                     <button type="button" className="btn" onClick={onClose}>
-                        Anuluj
+                        {t("map.cancel")}
                     </button>
                     <button
                         type="button"
                         className="btn btn-secondary"
                         disabled={!address || !addressText}
                         onClick={() => address && onSelect(address)}>
-                        Użyj tego adresu
+                        {t("map.use")}
                     </button>
                 </div>
             </div>

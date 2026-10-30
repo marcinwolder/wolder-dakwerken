@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 import { BsChatSquareText, BsEnvelopeAt, BsWhatsapp } from 'react-icons/bs';
 
+import { useErrorText, useTranslation } from '../../i18n';
 import { $currentSection, redirectToSection } from '../../quotationStore';
 import FormCheckbox from '../FormCheckbox';
 import FormInput from '../FormInput';
@@ -12,27 +13,33 @@ export default function ContactInfo() {
         formState: { errors },
         trigger,
     } = useFormContext();
+    const { t } = useTranslation();
+    const errorText = useErrorText();
     const isContactError: boolean = errors["contactWhatsapp"] ? true : false;
     return (
         <>
             <div className="flex gap-2">
-                <FormInput id="firstName" name="Imię" placeholder="Jan" />
+                <FormInput
+                    id="firstName"
+                    name={t("contact.firstName")}
+                    placeholder={t("contact.firstNamePlaceholder")}
+                />
                 <FormInput
                     id="lastName"
-                    name="Nazwisko"
-                    placeholder="Kowalski"
+                    name={t("contact.lastName")}
+                    placeholder={t("contact.lastNamePlaceholder")}
                 />
             </div>
             <PhoneInput
                 id="phoneNumber"
-                name="Numer telefonu"
+                name={t("contact.phone")}
                 placeholder="111 222 333"
             />
             <FormInput
                 id="email"
-                name="Adres email"
+                name={t("contact.email")}
                 type="email"
-                placeholder="kontakt@wolderdakwerken.pl"
+                placeholder={t("contact.emailPlaceholder")}
             />
             <fieldset
                 className={classNames(
@@ -43,7 +50,7 @@ export default function ContactInfo() {
                     className={classNames("label", {
                         "text-error": isContactError,
                     })}>
-                    Jakie formy kontaktu preferujesz?
+                    {t("contact.preferred")}
                 </legend>
                 <div className="grid grid-cols-3">
                     <FormCheckbox id="contactWhatsapp" name="WhatsApp">
@@ -64,7 +71,7 @@ export default function ContactInfo() {
                 </div>
                 {isContactError && (
                     <p className="label text-error mt-2 whitespace-normal">
-                        {errors["contactWhatsapp"]?.message?.toString()}
+                        {errorText(errors["contactWhatsapp"]?.message)}
                     </p>
                 )}
             </fieldset>
@@ -73,7 +80,7 @@ export default function ContactInfo() {
                 <input
                     type="button"
                     className="btn btn-secondary mb-4 w-full"
-                    value={"Następny krok"}
+                    value={t("button.next")}
                     onClick={async () => {
                         const isSetepValid = await trigger(
                             [

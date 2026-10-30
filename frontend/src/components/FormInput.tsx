@@ -2,6 +2,8 @@ import classNames from "classnames";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
+import { useErrorText } from "../i18n";
+
 const FormInput: React.FC<
     React.PropsWithChildren<{
         id: string;
@@ -31,6 +33,7 @@ const FormInput: React.FC<
         formState: { errors },
         clearErrors,
     } = useFormContext();
+    const errorText = useErrorText();
     const isError: boolean = errors[id] ? true : false;
     const registration = register(id);
     return (
@@ -59,7 +62,7 @@ const FormInput: React.FC<
             />
             {errors[id] && (
                 <p className={classNames("label whitespace-normal", { "text-error": isError })}>
-                    {errors[id]?.message?.toString()}
+                    {errorText(errors[id]?.message)}
                 </p>
             )}
         </fieldset>

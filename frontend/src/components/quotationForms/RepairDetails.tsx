@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 
+import { useErrorText, useTranslation } from '../../i18n';
 import { redirectToSection } from '../../quotationStore';
 import {
     ADDITIONAL_INFO_MAX_LENGTH,
@@ -35,7 +36,9 @@ export default function RepairDetails() {
         clearErrors,
         formState: { errors },
     } = useFormContext();
-    const serviceError = errors[SERVICE_ERROR_FIELD]?.message?.toString();
+    const { t } = useTranslation();
+    const errorText = useErrorText();
+    const serviceError = errorText(errors[SERVICE_ERROR_FIELD]?.message);
     const infoRegistration = register("additionalInfo");
     const isInfoError = Boolean(errors["additionalInfo"]);
     const infoLength = (watch("additionalInfo") ?? "").length;
@@ -43,7 +46,7 @@ export default function RepairDetails() {
         <>
             <div className="grid grid-cols-2 gap-4 mt-4">
                 {REPAIR_OPTIONS.map(({ name, label }) => (
-                    <Checkbox key={name} label={label} name={name} />
+                    <Checkbox key={name} label={t(label)} name={name} />
                 ))}
             </div>
             {serviceError && (
@@ -56,7 +59,7 @@ export default function RepairDetails() {
                             "text-error": isInfoError,
                         })}
                         htmlFor="additionalInfo">
-                        Inne potrzeby lub dodatkowe informacje
+                        {t("repair.additionalLabel")}
                     </label>
                     <span
                         className={classNames("label", {
@@ -71,7 +74,7 @@ export default function RepairDetails() {
                     className={classNames("textarea w-full resize-none", {
                         "textarea-error": isInfoError,
                     })}
-                    placeholder="Opisz problem, np. przeciek w okolicy komina albo inną usługę, której nie ma na liście"
+                    placeholder={t("repair.additionalPlaceholder")}
                     {...infoRegistration}
                     onChange={(e) => {
                         infoRegistration.onChange(e);
@@ -80,7 +83,7 @@ export default function RepairDetails() {
                 />
                 {isInfoError && (
                     <p className="label text-error whitespace-normal">
-                        {errors["additionalInfo"]?.message?.toString()}
+                        {errorText(errors["additionalInfo"]?.message)}
                     </p>
                 )}
             </fieldset>
@@ -90,7 +93,7 @@ export default function RepairDetails() {
                     <input
                         type="button"
                         className="btn"
-                        value={"Poprzedni krok"}
+                        value={t("button.previous")}
                         onClick={() => {
                             redirectToSection(1);
                         }}
@@ -98,7 +101,7 @@ export default function RepairDetails() {
                     <input
                         type="button"
                         className="btn btn-secondary"
-                        value={"Następny krok"}
+                        value={t("button.next")}
                         onClick={async () => {
                             const isSetepValid = await trigger([...REPAIR_NAMES, "additionalInfo"], {
                                 shouldFocus: true,

@@ -9,6 +9,7 @@ import {
     BsWhatsapp,
 } from 'react-icons/bs';
 
+import { useTranslation } from '../../i18n';
 import { redirectToSection } from '../../quotationStore';
 import { REPAIR_OPTIONS } from './repairOptions';
 
@@ -18,6 +19,7 @@ function SummaryCard(props: {
     step: number;
     children: ReactNode;
 }) {
+    const { t } = useTranslation();
     return (
         <section className="card card-border bg-base-100 border-base-300">
             <div className="card-body p-4 gap-3">
@@ -30,7 +32,7 @@ function SummaryCard(props: {
                         type="button"
                         className="btn btn-ghost btn-sm"
                         onClick={() => redirectToSection(props.step)}>
-                        Edytuj
+                        {t("button.edit")}
                     </button>
                 </div>
                 {props.children}
@@ -58,6 +60,7 @@ const CONTACT_METHODS = [
 
 export default function Summary() {
     const { getValues } = useFormContext();
+    const { t } = useTranslation();
 
     const repairs = REPAIR_OPTIONS.filter((o) => getValues(o.name));
     const contactMethods = CONTACT_METHODS.filter((m) => getValues(m.name));
@@ -65,14 +68,14 @@ export default function Summary() {
     return (
         <>
             <div className="flex flex-col gap-3 mt-4">
-                <SummaryCard icon={<BsPerson />} title="Dane kontaktowe" step={1}>
+                <SummaryCard icon={<BsPerson />} title={t("summary.contact")} step={1}>
                     <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <Field label="Imię i nazwisko">
+                        <Field label={t("summary.name")}>
                             {getValues("firstName")} {getValues("lastName")}
                         </Field>
-                        <Field label="Telefon">{getValues("phoneNumber")}</Field>
-                        <Field label="Email">{getValues("email")}</Field>
-                        <Field label="Preferowany kontakt">
+                        <Field label={t("summary.phone")}>{getValues("phoneNumber")}</Field>
+                        <Field label={t("summary.email")}>{getValues("email")}</Field>
+                        <Field label={t("summary.preferred")}>
                             <span className="flex flex-wrap gap-2">
                                 {contactMethods.map((m) => (
                                     <span
@@ -86,18 +89,18 @@ export default function Summary() {
                         </Field>
                     </dl>
                 </SummaryCard>
-                <SummaryCard icon={<BsTools />} title="Rodzaj naprawy" step={2}>
+                <SummaryCard icon={<BsTools />} title={t("summary.repair")} step={2}>
                     <ul className="flex flex-wrap gap-2">
                         {repairs.map((r) => (
                             <li
                                 key={r.name}
                                 className="badge badge-outline h-auto py-1">
-                                {r.label}
+                                {t(r.label)}
                             </li>
                         ))}
                     </ul>
                     {getValues("additionalInfo") && (
-                        <Field label="Dodatkowe informacje">
+                        <Field label={t("summary.additional")}>
                             <span className="whitespace-pre-wrap">
                                 {getValues("additionalInfo")}
                             </span>
@@ -106,12 +109,12 @@ export default function Summary() {
                 </SummaryCard>
                 <SummaryCard
                     icon={<BsGeoAlt />}
-                    title="Lokalizacja budynku"
+                    title={t("summary.location")}
                     step={3}>
                     <address className="not-italic font-medium">
                         {getValues("streetName")}
                         {getValues("apartmentNumber") &&
-                            `, m. ${getValues("apartmentNumber")}`}
+                            `, ${t("location.apartmentShort")} ${getValues("apartmentNumber")}`}
                         <br />
                         {getValues("zipCode")} {getValues("city")}
                     </address>
@@ -123,7 +126,7 @@ export default function Summary() {
                     <input
                         type="button"
                         className="btn"
-                        value={"Poprzedni krok"}
+                        value={t("button.previous")}
                         onClick={() => {
                             redirectToSection(3);
                         }}
@@ -131,7 +134,7 @@ export default function Summary() {
                     <input
                         type="submit"
                         className="btn btn-secondary"
-                        value={"Wyślij zgłoszenie!"}
+                        value={t("button.submit")}
                     />
                 </div>
             </div>
