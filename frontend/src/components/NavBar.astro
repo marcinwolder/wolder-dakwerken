@@ -1,13 +1,19 @@
 ---
-import LanguagePicker from "./LanguagePicker.astro"
-import HamburgerMenu from "./HamburgerMenu.astro"
-import logo from "../assets/logo_shrink.png"
-import { withBase } from "../utils/withBase"
-const homePath = withBase("/")
+import LanguagePicker from "./LanguagePicker.tsx";
+import HamburgerMenu from "./HamburgerMenu.astro";
+import logo from "../assets/logo_shrink.png";
+import { withBase } from "../utils/withBase";
+import type { Language } from "../i18n";
+
+const { lang } = Astro.props as { lang: Language };
+// The root page redirects to the visitor's language, so the link stays right after an in-page language switch.
+const homePath = withBase("/");
+const isHome = Astro.url.pathname.replace(/\/$/, "") === withBase(`/${lang}`);
 ---
+
 <div class="grid grid-cols-3 items-center">
     <div class="justify-self-start">
-        <LanguagePicker />
+        <LanguagePicker client:load lang={lang} />
     </div>
     <div class="flex justify-center">
         <a href={homePath}>
@@ -16,12 +22,12 @@ const homePath = withBase("/")
                 alt="logo"
                 class:list={[
                     "w-16 brightness-0 drop-shadow-sm drop-shadow-gray-300",
-                    { hidden: Astro.url.pathname === homePath },
+                    { hidden: isHome },
                 ]}
             />
         </a>
     </div>
-    <div class="justify-self-end">
+    <!-- <div class="justify-self-end">
         <HamburgerMenu />
-    </div>
+    </div> -->
 </div>

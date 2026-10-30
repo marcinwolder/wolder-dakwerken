@@ -1,18 +1,19 @@
+// `label` is a translation key.
 export const REPAIR_OPTIONS = [
     {
         name: "repairRoofRepairAndMaintenance",
-        label: "Naprawa i konserwacja dachu",
+        label: "repair.roofRepairAndMaintenance",
     },
-    { name: "repairGutterInstallation", label: "Montaż orynnowania" },
-    { name: "repairSheetMetalWork", label: "Obróbki blacharskie" },
+    { name: "repairGutterInstallation", label: "repair.gutterInstallation" },
+    { name: "repairSheetMetalWork", label: "repair.sheetMetalWork" },
     {
         name: "repairRoofWindowsAndHatches",
-        label: "Montaż okien dachowych i wyłazów",
+        label: "repair.roofWindowsAndHatches",
     },
-    { name: "repairRoofInsulation", label: "Ocieplanie i izolacja dachu" },
+    { name: "repairRoofInsulation", label: "repair.roofInsulation" },
     {
         name: "repairSoffitInstallation",
-        label: "Montaż podbitki dachowej (podsufitki)",
+        label: "repair.soffitInstallation",
     },
 ] as const;
 

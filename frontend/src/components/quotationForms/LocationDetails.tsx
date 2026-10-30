@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
+import { useTranslation } from '../../i18n';
 import { redirectToSection } from '../../quotationStore';
 import FormInput from '../FormInput';
 
@@ -11,6 +12,7 @@ const MapPicker = lazy(() => import('./MapPicker'));
 export default function LocationDetails() {
     const { trigger, setValue, clearErrors, setFocus } = useFormContext();
     const [isMapOpen, setIsMapOpen] = useState(false);
+    const { t } = useTranslation();
     return (
         <>
             <div className="flex flex-col mt-4">
@@ -19,18 +21,18 @@ export default function LocationDetails() {
                     className="btn btn-outline w-full mb-2"
                     onClick={() => setIsMapOpen(true)}>
                     <FaMapMarkerAlt />
-                    Wybierz adres z mapy
+                    {t("location.pickOnMap")}
                 </button>
-                <FormInput id={'streetName'} name={'Ulica i numer budynku'} />
+                <FormInput id={'streetName'} name={t("location.street")} />
                 <div className="grid grid-cols-2 gap-2">
                     <FormInput
                         id={'apartmentNumber'}
-                        name={'Numer mieszkania (opcjonalnie)'}
-                        placeholder="np. 12"
+                        name={t("location.apartment")}
+                        placeholder={t("location.apartmentPlaceholder")}
                     />
-                    <FormInput id={'zipCode'} name={'Kod pocztowy'} />
+                    <FormInput id={'zipCode'} name={t("location.zip")} />
                 </div>
-                <FormInput id={'city'} name={'Miejscowość'} />
+                <FormInput id={'city'} name={t("location.city")} />
             </div>
             {isMapOpen && (
                 <Suspense fallback={null}>
@@ -54,7 +56,7 @@ export default function LocationDetails() {
                     <input
                         type="button"
                         className="btn"
-                        value={"Poprzedni krok"}
+                        value={t("button.previous")}
                         onClick={() => {
                             redirectToSection(2);
                         }}
@@ -62,7 +64,7 @@ export default function LocationDetails() {
                     <input
                         type="button"
                         className="btn btn-secondary"
-                        value={"Następny krok"}
+                        value={t("button.next")}
                         onClick={async () => {
                             const isCorrect = await trigger(['streetName', 'zipCode', 'city']);
                             if (isCorrect) {
