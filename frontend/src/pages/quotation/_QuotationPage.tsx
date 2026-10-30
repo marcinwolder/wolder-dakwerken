@@ -57,7 +57,7 @@ const quotationSchema = z
             .optional(),
         streetName: z.string().min(1, REQUIRED_ERROR_MESSAGE),
         apartmentNumber: z.string().trim().optional(),
-        zipCode: z.string().min(1, REQUIRED_ERROR_MESSAGE).regex(/(\d\d-\d\d\d)|(\d{5})/, "Niepoprawny format pocztowego"),
+        zipCode: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE).regex(/^(\d\d-\d\d\d|\d{5})$/, "Niepoprawny format pocztowego"),
         city: z.string().min(1, REQUIRED_ERROR_MESSAGE),
     })
     .refine(
@@ -134,6 +134,7 @@ export default function Quotation() {
                 <FormProvider {...methods}>
                     <form
                         onSubmit={handleSubmit((data) => {
+                            // TODO: Send the quotation to the backend once an endpoint exists.
                             console.log(data);
                         })}
                         className="flex flex-col justify-center">

@@ -1,7 +1,7 @@
 import 'leaflet/dist/leaflet.css';
 
 import L from 'leaflet';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
@@ -81,15 +81,20 @@ export default function MapPicker({
     const [address, setAddress] = useState<PickedAddress | null>(null);
     const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
 
+    const latestRequest = useRef(0);
+
     const pick = async (coords: Coords) => {
+        const requestId = ++latestRequest.current;
         setPosition(coords);
         setAddress(null);
         setStatus("loading");
         try {
             const result = await reverseGeocode(coords);
+            if (requestId !== latestRequest.current) return;
             setAddress(result);
             setStatus("idle");
         } catch {
+            if (requestId !== latestRequest.current) return;
             setStatus("error");
         }
     };

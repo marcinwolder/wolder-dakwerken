@@ -129,10 +129,9 @@ export default function Summary() {
                         }}
                     />
                     <input
-                        type="button"
+                        type="submit"
                         className="btn btn-secondary"
                         value={"Wyślij zgłoszenie!"}
-                        onClick={async () => {}}
                     />
                 </div>
             </div>
