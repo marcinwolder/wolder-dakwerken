@@ -26,20 +26,16 @@ const PINNED_COUNTRIES: CountryCode[] = LANGUAGES.map((l) => l.country);
 // Country names and their order depend on the language, so the list is built per language.
 function buildCountries(language: Language) {
     const regionNames = new Intl.DisplayNames([language], { type: "region" });
-    return getCountries()
+    const all = getCountries()
         .map((code) => ({
             code,
             name: regionNames.of(code) ?? code,
             callingCode: getCountryCallingCode(code),
         }))
-        .sort((a, b) => {
-            const pinA = PINNED_COUNTRIES.indexOf(a.code);
-            const pinB = PINNED_COUNTRIES.indexOf(b.code);
-            if (pinA !== -1 || pinB !== -1) {
-                return (pinA === -1 ? 99 : pinA) - (pinB === -1 ? 99 : pinB);
-            }
-            return a.name.localeCompare(b.name, language);
-        });
+        .sort((a, b) => a.name.localeCompare(b.name, language));
+    // Pinned countries are listed first and also stay at their place in the alphabet.
+    const pinned = PINNED_COUNTRIES.flatMap((code) => all.find((c) => c.code === code) ?? []);
+    return { pinned, all };
 }
 
 const countriesCache = new Map<Language, ReturnType<typeof buildCountries>>();
@@ -190,23 +186,46 @@ export default function PhoneInput(props: {
         commit(country, raw.replace(/[^\d\s-]/g, ""));
     };
 
-    const filtered = useMemo(() => {
+    const { pinned, filtered } = useMemo(() => {
         const q = query.trim().toLowerCase().replace(/^\+/, "");
         if (!q) {
-            return countries;
+            return { pinned: countries.pinned, filtered: countries.all };
         }
-        return countries.filter(
-            (c) =>
-                c.name.toLowerCase().includes(q) ||
-                c.code.toLowerCase() === q ||
-                c.callingCode.startsWith(q),
-        );
+        // A search lists each match once, so the pinned section is hidden.
+        return {
+            pinned: [],
+            filtered: countries.all.filter(
+                (c) =>
+                    c.name.toLowerCase().includes(q) ||
+                    c.code.toLowerCase() === q ||
+                    c.callingCode.startsWith(q),
+            ),
+        };
     }, [query, countries]);
 
     const close = () => {
         setIsOpen(false);
         setQuery("");
     };
+
+    const renderCountry = (c: (typeof filtered)[number], key: string) => (
+        <li key={key}>
+            <button
+                type="button"
+                className={classNames(
+                    "flex w-full items-center gap-3 rounded-field px-2 py-1.5 text-left hover:bg-base-200",
+                    { "font-bold": c.code === country },
+                )}
+                onClick={() => {
+                    commit(c.code, text);
+                    close();
+                }}>
+                <Flag country={c.code} />
+                <span className="grow truncate">{c.name}</span>
+                <span className="opacity-60">+{c.callingCode}</span>
+            </button>
+        </li>
+    );
 
     return (
         <fieldset className="fieldset w-full">
@@ -260,31 +279,11 @@ export default function PhoneInput(props: {
                                 onChange={(e) => setQuery(e.target.value)}
                             />
                             <ul className="max-h-60 overflow-y-auto">
-                                {filtered.map((c) => (
-                                    <li key={c.code}>
-                                        <button
-                                            type="button"
-                                            className={classNames(
-                                                "flex w-full items-center gap-3 rounded-field px-2 py-1.5 text-left hover:bg-base-200",
-                                                {
-                                                    "font-bold":
-                                                        c.code === country,
-                                                },
-                                            )}
-                                            onClick={() => {
-                                                commit(c.code, text);
-                                                close();
-                                            }}>
-                                            <Flag country={c.code} />
-                                            <span className="grow truncate">
-                                                {c.name}
-                                            </span>
-                                            <span className="opacity-60">
-                                                +{c.callingCode}
-                                            </span>
-                                        </button>
-                                    </li>
-                                ))}
+                                {pinned.map((c) => renderCountry(c, `pinned-${c.code}`))}
+                                {pinned.length > 0 && (
+                                    <li role="separator" className="my-1 border-t border-base-300" />
+                                )}
+                                {filtered.map((c) => renderCountry(c, c.code))}
                                 {filtered.length === 0 && (
                                     <li className="px-2 py-1.5 text-sm opacity-60">
                                         {t("phone.noResults")}

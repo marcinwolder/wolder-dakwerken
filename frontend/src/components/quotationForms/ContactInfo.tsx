@@ -33,17 +33,19 @@ export default function ContactInfo() {
                     placeholder={t("contact.lastNamePlaceholder")}
                 />
             </div>
-            <PhoneInput
-                id="phoneNumber"
-                name={t("contact.phone")}
-            />
-            <FormInput
-                id="email"
-                autoComplete="email"
-                name={t("contact.email")}
-                type="email"
-                placeholder={t("contact.emailPlaceholder")}
-            />
+            <div className="flex flex-col lg:grid lg:grid-cols-2 lg:items-start lg:gap-2">
+                <PhoneInput
+                    id="phoneNumber"
+                    name={t("contact.phone")}
+                />
+                <FormInput
+                    id="email"
+                    autoComplete="email"
+                    name={t("contact.email")}
+                    type="email"
+                    placeholder={t("contact.emailPlaceholder")}
+                />
+            </div>
             <fieldset
                 className={classNames(
                     "fieldset bg-base-100 border-base-300 rounded-box w-full border-2 p-4 mt-2",

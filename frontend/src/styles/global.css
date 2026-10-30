@@ -38,6 +38,20 @@
     padding-bottom: 9.5rem;
 }
 
+/* On desktop the step buttons sit at the end of the form card instead of the screen edge. */
+@media (min-width: 64rem) {
+    .sticky-footer {
+        position: static;
+        padding: 0;
+        margin-top: 1.5rem;
+        background: none;
+    }
+
+    .form-with-footer {
+        padding-bottom: 0;
+    }
+}
+
 /* Landing page look: big rounded shapes, thick black borders, bold labels. */
 :root {
     --radius-selector: 1rem;
