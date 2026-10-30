@@ -3,6 +3,7 @@ import { FaAnglesDown } from "react-icons/fa6";
 
 import Logo from "../assets/logo_shrink.png";
 import AnimatedHouse from "../components/AnimatedHouse";
+import { withBase } from "../utils/withBase";
 ---
 
 <div class="flex justify-center mb-8">
@@ -35,7 +36,7 @@ import AnimatedHouse from "../components/AnimatedHouse";
 </div>
 <div class="flex justify-center">
     <a
-        href="/quotation"
+        href={withBase("/quotation")}
         class="btn btn-xl btn-ghost w-[80vw] border-2 border-primary rounded-3xl shadow-lg font-bold">
         UMÓW WYCENĘ
     </a>
