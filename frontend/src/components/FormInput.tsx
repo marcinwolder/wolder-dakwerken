@@ -37,9 +37,9 @@ const FormInput: React.FC<
     const isError: boolean = errors[id] ? true : false;
     const registration = register(id);
     return (
-        <fieldset className="fieldset w-full">
+        <fieldset className="fieldset w-full min-w-0">
             <label
-                className={classNames("label", { "text-error": isError })}
+                className={classNames("label w-full whitespace-normal leading-tight", { "text-error": isError })}
                 htmlFor={id}>
                 {name}
             </label>

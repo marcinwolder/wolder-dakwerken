@@ -77,7 +77,7 @@ export default function LocationDetails() {
                         ))}
                     </select>
                 </fieldset>
-                <div className="grid grid-cols-[minmax(0,1fr)_9rem] gap-2">
+                <div className="grid grid-cols-[minmax(0,1fr)_9rem] items-start gap-2 max-sm:[&_label]:min-h-11">
                     <FormInput
                         id={'streetName'}
                         name={t("location.street")}
@@ -90,7 +90,7 @@ export default function LocationDetails() {
                         autoComplete="address-line2"
                     />
                 </div>
-                <div className="grid grid-cols-[9rem_minmax(0,1fr)] gap-2">
+                <div className="grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-2 max-sm:[&_label]:min-h-11">
                     <FormInput
                         id={'zipCode'}
                         name={t("location.zip")}

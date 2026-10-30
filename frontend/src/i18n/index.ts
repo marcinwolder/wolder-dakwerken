@@ -11,10 +11,10 @@ import pl, { type Dictionary, type TranslationKey } from "./locales/pl";
 export type { TranslationKey };
 
 export const LANGUAGES = [
-    { code: "pl", name: "Polski", country: "PL" },
-    { code: "en", name: "English", country: "GB" },
-    { code: "de", name: "Deutsch", country: "DE" },
     { code: "nl", name: "Nederlands", country: "NL" },
+    { code: "de", name: "Deutsch", country: "DE" },
+    { code: "en", name: "English", country: "GB" },
+    { code: "pl", name: "Polski", country: "PL" },
 ] as const;
 
 export type Language = (typeof LANGUAGES)[number]["code"];

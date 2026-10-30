@@ -4,6 +4,7 @@ import {
     BsChatSquareText,
     BsEnvelopeAt,
     BsGeoAlt,
+    BsPencil,
     BsPerson,
     BsTools,
     BsWhatsapp,
@@ -25,15 +26,17 @@ function SummaryCard(props: {
         <section className="card card-border bg-base-100 border-primary shadow-lg">
             <div className="card-body p-4 gap-3">
                 <div className="flex items-center gap-3">
-                    <span className="text-2xl text-secondary">
+                    <span className="text-2xl text-secondary shrink-0">
                         {props.icon}
                     </span>
-                    <h3 className="card-title text-xl grow">{props.title}</h3>
+                    <h3 className="card-title text-lg sm:text-xl grow min-w-0 break-words">{props.title}</h3>
                     <button
                         type="button"
-                        className="btn btn-ghost font-bold"
+                        className="btn btn-ghost btn-circle shrink-0 text-xl"
+                        aria-label={`${t("button.edit")}: ${props.title}`}
+                        title={t("button.edit")}
                         onClick={() => redirectToSection(props.step)}>
-                        {t("button.edit")}
+                        <BsPencil />
                     </button>
                 </div>
                 {props.children}
@@ -44,7 +47,7 @@ function SummaryCard(props: {
 
 function Field(props: { label: string; children: ReactNode }) {
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
             <dt className="text-sm uppercase tracking-wide opacity-60">
                 {props.label}
             </dt>

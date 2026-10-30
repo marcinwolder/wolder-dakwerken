@@ -3,11 +3,11 @@ import LanguagePicker from "./LanguagePicker.tsx";
 import HamburgerMenu from "./HamburgerMenu.astro";
 import logo from "../assets/logo_shrink.png";
 import { withBase } from "../utils/withBase";
-import type { Language } from "../i18n";
+import { localizedPath, type Language } from "../i18n";
 
 const { lang } = Astro.props as { lang: Language };
-// The root page redirects to the visitor's language, so the link stays right after an in-page language switch.
-const homePath = withBase("/");
+// The link points at the page language; the script below follows an in-page language switch.
+const homePath = localizedPath(lang, "/");
 const isHome = Astro.url.pathname.replace(/\/$/, "") === withBase(`/${lang}`);
 ---
 
@@ -16,7 +16,7 @@ const isHome = Astro.url.pathname.replace(/\/$/, "") === withBase(`/${lang}`);
         <LanguagePicker client:load lang={lang} />
     </div>
     <div class="flex justify-center">
-        <a href={homePath}>
+        <a href={homePath} data-home-base={withBase("/")}>
             <img
                 src={logo.src}
                 alt="logo"
@@ -31,3 +31,11 @@ const isHome = Astro.url.pathname.replace(/\/$/, "") === withBase(`/${lang}`);
         <HamburgerMenu />
     </div> -->
 </div>
+
+<script>
+    // An in-page language switch only changes the URL and <html lang>, so resolve the link on click.
+    const home = document.querySelector<HTMLAnchorElement>("a[data-home-base]");
+    home?.addEventListener("click", () => {
+        home.href = `${home.dataset.homeBase}${document.documentElement.lang}/`;
+    });
+</script>
