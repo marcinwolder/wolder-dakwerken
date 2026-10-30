@@ -10,6 +10,7 @@ import {
 } from 'react-icons/bs';
 
 import { useTranslation } from '../../i18n';
+import { keepInputFocus } from '../../lib/utils';
 import { redirectToSection } from '../../quotationStore';
 import { REPAIR_OPTIONS } from './repairOptions';
 
@@ -120,9 +121,9 @@ export default function Summary() {
                     </address>
                 </SummaryCard>
             </div>
-            <div className="sticky bottom-0 bg-white">
+            <div className="sticky-footer" onMouseDown={keepInputFocus}>
                 <div className="divider " />
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4">
                     <input
                         type="button"
                         className="btn"

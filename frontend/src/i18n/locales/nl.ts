@@ -50,7 +50,7 @@ const nl: Dictionary = {
 
     "location.pickOnMap": "Kies het adres op de kaart",
     "location.street": "Straat en huisnummer",
-    "location.apartment": "Appartementnummer (optioneel)",
+    "location.apartment": "App. (optioneel)",
     "location.apartmentPlaceholder": "bijv. 12",
     "location.apartmentShort": "app.",
     "location.zip": "Postcode",
@@ -62,6 +62,7 @@ const nl: Dictionary = {
         "Het adres kon niet worden opgehaald. Probeer een andere plek.",
     "map.noAddress": "Op deze plek is geen adres gevonden.",
     "map.locate": "Mijn locatie gebruiken",
+    "map.locateError": "Je locatie kon niet worden bepaald. Sta locatietoegang toe in je browser of kies een plek op de kaart.",
     "map.cancel": "Annuleren",
     "map.use": "Dit adres gebruiken",
 

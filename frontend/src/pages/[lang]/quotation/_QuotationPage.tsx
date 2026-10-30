@@ -124,6 +124,26 @@ function QuotationForm() {
         return () => window.removeEventListener("popstate", onPopState);
     }, []);
 
+    useEffect(() => {
+        // iOS Safari keeps the page shifted after the keyboard closes (e.g. after autofill) and
+        // then taps on `position: fixed` elements miss until the page scrolls. A tiny scroll fixes it.
+        let timeout: ReturnType<typeof setTimeout>;
+        const nudgeScroll = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                window.scrollBy(0, 1);
+                window.scrollBy(0, -1);
+            }, 150);
+        };
+        document.addEventListener("focusout", nudgeScroll);
+        window.visualViewport?.addEventListener("resize", nudgeScroll);
+        return () => {
+            clearTimeout(timeout);
+            document.removeEventListener("focusout", nudgeScroll);
+            window.visualViewport?.removeEventListener("resize", nudgeScroll);
+        };
+    }, []);
+
     return (
         <>
             <ul className="steps my-8 text-xs w-full">
@@ -159,7 +179,7 @@ function QuotationForm() {
                             // TODO: Send the quotation to the backend once an endpoint exists.
                             console.log(data);
                         })}
-                        className="flex flex-col justify-center">
+                        className="flex flex-col justify-center form-with-footer">
                         {currentSection === 1 && <ContactInfo />}
                         {currentSection === 2 && <RepairDetails />}
                         {currentSection === 3 && <LocationDetails />}

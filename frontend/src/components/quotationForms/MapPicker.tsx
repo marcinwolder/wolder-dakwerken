@@ -30,6 +30,10 @@ type NominatimResponse = {
     address?: Record<string, string>;
 };
 
+// Prefixes of administrative units in PL, DE, NL and EN, which are not part of a place name.
+const ADMINISTRATIVE_PREFIX =
+    /^(gmina miejsko-wiejska|gmina miejska|gmina wiejska|gmina|miasto|municipality of|gemeente|gemeinde|stadt|city of)\s+/i;
+
 const reverseGeocode = async (
     [lat, lon]: Coords,
     language: Language,
@@ -45,15 +49,18 @@ const reverseGeocode = async (
         throw new Error("No address found");
     }
     const street = address.road ?? address.pedestrian ?? address.hamlet ?? "";
+    // `municipality` is the administrative unit (e.g. "gmina Lipsko"), so it is only a last resort.
+    const city =
+        address.city ??
+        address.town ??
+        address.village ??
+        address.hamlet ??
+        address.municipality ??
+        "";
     return {
         streetName: [street, address.house_number].filter(Boolean).join(" "),
         zipCode: address.postcode ?? "",
-        city:
-            address.city ??
-            address.town ??
-            address.village ??
-            address.municipality ??
-            "",
+        city: city.replace(ADMINISTRATIVE_PREFIX, "").trim(),
     };
 };
 
@@ -86,7 +93,7 @@ export default function MapPicker({
     const [initialView] = useState(() => MAP_VIEWS[language]);
     const [position, setPosition] = useState<Coords | null>(null);
     const [address, setAddress] = useState<PickedAddress | null>(null);
-    const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+    const [status, setStatus] = useState<"idle" | "loading" | "error" | "locateError">("idle");
 
     const latestRequest = useRef(0);
 
@@ -107,8 +114,16 @@ export default function MapPicker({
     };
 
     const locateMe = () => {
-        navigator.geolocation?.getCurrentPosition((p) =>
-            pick([p.coords.latitude, p.coords.longitude]),
+        // Geolocation is missing on insecure (http) pages and fails when the permission is denied.
+        if (!navigator.geolocation) {
+            setStatus("locateError");
+            return;
+        }
+        setStatus("loading");
+        navigator.geolocation.getCurrentPosition(
+            (p) => pick([p.coords.latitude, p.coords.longitude]),
+            () => setStatus("locateError"),
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
         );
     };
 
@@ -145,8 +160,12 @@ export default function MapPicker({
                     {status === "loading" && (
                         <span className="loading loading-dots loading-sm" />
                     )}
-                    {status === "error" && t("map.error")}
                     {address && (addressText || t("map.noAddress"))}
+                    {(status === "error" || status === "locateError") && (
+                        <p className="text-error mt-2">
+                            {t(status === "error" ? "map.error" : "map.locateError")}
+                        </p>
+                    )}
                 </div>
                 <div className="modal-action grid grid-cols-2 gap-2">
                     <button

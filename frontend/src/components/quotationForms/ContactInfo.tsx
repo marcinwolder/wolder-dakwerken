@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { BsChatSquareText, BsEnvelopeAt, BsWhatsapp } from 'react-icons/bs';
 
 import { useErrorText, useTranslation } from '../../i18n';
+import { keepInputFocus } from '../../lib/utils';
 import { $currentSection, redirectToSection } from '../../quotationStore';
 import FormCheckbox from '../FormCheckbox';
 import FormInput from '../FormInput';
@@ -75,11 +76,11 @@ export default function ContactInfo() {
                     </p>
                 )}
             </fieldset>
-            <div className="sticky bottom-0">
+            <div className="sticky-footer" onMouseDown={keepInputFocus}>
                 <div className="divider" />
                 <input
                     type="button"
-                    className="btn btn-secondary mb-4 w-full"
+                    className="btn btn-secondary w-full"
                     value={t("button.next")}
                     onClick={async () => {
                         const isSetepValid = await trigger(

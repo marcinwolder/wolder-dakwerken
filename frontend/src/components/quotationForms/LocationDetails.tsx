@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 import { useTranslation } from '../../i18n';
+import { keepInputFocus } from '../../lib/utils';
 import { redirectToSection } from '../../quotationStore';
 import FormInput from '../FormInput';
 
@@ -23,16 +24,18 @@ export default function LocationDetails() {
                     <FaMapMarkerAlt />
                     {t("location.pickOnMap")}
                 </button>
-                <FormInput id={'streetName'} name={t("location.street")} />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-[minmax(0,1fr)_9rem] gap-2">
+                    <FormInput id={'streetName'} name={t("location.street")} />
                     <FormInput
                         id={'apartmentNumber'}
                         name={t("location.apartment")}
                         placeholder={t("location.apartmentPlaceholder")}
                     />
-                    <FormInput id={'zipCode'} name={t("location.zip")} />
                 </div>
-                <FormInput id={'city'} name={t("location.city")} />
+                <div className="grid grid-cols-[9rem_minmax(0,1fr)] gap-2">
+                    <FormInput id={'zipCode'} name={t("location.zip")} />
+                    <FormInput id={'city'} name={t("location.city")} />
+                </div>
             </div>
             {isMapOpen && (
                 <Suspense fallback={null}>
@@ -50,9 +53,9 @@ export default function LocationDetails() {
                     />
                 </Suspense>
             )}
-            <div className="sticky bottom-0 bg-white">
+            <div className="sticky-footer" onMouseDown={keepInputFocus}>
                 <div className="divider " />
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4">
                     <input
                         type="button"
                         className="btn"

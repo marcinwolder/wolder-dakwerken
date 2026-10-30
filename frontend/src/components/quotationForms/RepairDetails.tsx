@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 
 import { useErrorText, useTranslation } from '../../i18n';
+import { keepInputFocus } from '../../lib/utils';
 import { redirectToSection } from '../../quotationStore';
 import {
     ADDITIONAL_INFO_MAX_LENGTH,
@@ -44,14 +45,15 @@ export default function RepairDetails() {
     const infoLength = (watch("additionalInfo") ?? "").length;
     return (
         <>
+            {/* Above the options, so it stays visible on small screens (the form scrolls below). */}
+            {serviceError && (
+                <p className="label text-error mt-2 whitespace-normal">{serviceError}</p>
+            )}
             <div className="grid grid-cols-2 gap-4 mt-4">
                 {REPAIR_OPTIONS.map(({ name, label }) => (
                     <Checkbox key={name} label={t(label)} name={name} />
                 ))}
             </div>
-            {serviceError && (
-                <p className="label text-error mt-2 whitespace-normal">{serviceError}</p>
-            )}
             <fieldset className="fieldset w-full mt-4">
                 <div className="flex items-center justify-between">
                     <label
@@ -87,9 +89,9 @@ export default function RepairDetails() {
                     </p>
                 )}
             </fieldset>
-            <div className="sticky bottom-0 bg-white">
+            <div className="sticky-footer" onMouseDown={keepInputFocus}>
                 <div className="divider " />
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4">
                     <input
                         type="button"
                         className="btn"

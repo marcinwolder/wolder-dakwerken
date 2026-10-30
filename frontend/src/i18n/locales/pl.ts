@@ -48,7 +48,7 @@ const pl = {
 
     "location.pickOnMap": "Wybierz adres z mapy",
     "location.street": "Ulica i numer budynku",
-    "location.apartment": "Numer mieszkania (opcjonalnie)",
+    "location.apartment": "Mieszkanie (opc.)",
     "location.apartmentPlaceholder": "np. 12",
     "location.apartmentShort": "m.",
     "location.zip": "Kod pocztowy",
@@ -59,6 +59,7 @@ const pl = {
     "map.error": "Nie udało się pobrać adresu. Spróbuj wskazać inne miejsce.",
     "map.noAddress": "Nie znaleziono adresu w tym miejscu.",
     "map.locate": "Użyj mojej lokalizacji",
+    "map.locateError": "Nie udało się ustalić lokalizacji. Zezwól przeglądarce na dostęp do lokalizacji lub wskaż miejsce na mapie.",
     "map.cancel": "Anuluj",
     "map.use": "Użyj tego adresu",
 
