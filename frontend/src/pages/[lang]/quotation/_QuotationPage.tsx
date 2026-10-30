@@ -1,0 +1,200 @@
+import { isValidPhoneNumber } from 'libphonenumber-js';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useStore } from '@nanostores/react';
+
+import ContactInfo from '../../../components/quotationForms/ContactInfo';
+import RepairDetails from '../../../components/quotationForms/RepairDetails';
+import { useEffect } from 'react';
+import classNames from 'classnames';
+
+import {
+    $currentSection,
+    $maxSection,
+    redirectToSection,
+    STEPS,
+    syncSectionWithUrl,
+} from '../../../quotationStore';
+import LocationDetails from '../../../components/quotationForms/LocationDetails';
+import Summary from '../../../components/quotationForms/Summary';
+import { ADDITIONAL_INFO_MAX_LENGTH } from '../../../components/quotationForms/repairOptions';
+import { type Language, type TranslationKey, useTranslation } from '../../../i18n';
+import I18nProvider from '../../../i18n/I18nProvider';
+import {
+    ADDRESS_COUNTRIES,
+    ADDRESS_COUNTRY_FOR_LANGUAGE,
+    isValidPostalCode,
+} from '../../../i18n/country';
+
+// Messages are translation keys (see `useErrorText`), so they are translated when shown.
+const REQUIRED_ERROR_MESSAGE: TranslationKey = "error.required";
+
+const quotationSchema = z
+    .object({
+        firstName: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
+        lastName: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
+        phoneNumber: z
+            .string()
+            .trim()
+            .min(1, REQUIRED_ERROR_MESSAGE)
+            .refine(
+                (val) => isValidPhoneNumber(val),
+                "error.phoneInvalid" satisfies TranslationKey,
+            ),
+        email: z
+            .string()
+            .trim()
+            .min(1, REQUIRED_ERROR_MESSAGE)
+            .pipe(z.email("error.emailInvalid" satisfies TranslationKey)),
+        contactWhatsapp: z.boolean(),
+        contactEmail: z.boolean(),
+        contactSms: z.boolean(),
+        repairRoofRepairAndMaintenance: z.boolean(),
+        repairGutterInstallation: z.boolean(),
+        repairSheetMetalWork: z.boolean(),
+        repairRoofWindowsAndHatches: z.boolean(),
+        repairRoofInsulation: z.boolean(),
+        repairSoffitInstallation: z.boolean(),
+        additionalInfo: z
+            .string()
+            .trim()
+            .max(ADDITIONAL_INFO_MAX_LENGTH, "error.tooLong" satisfies TranslationKey)
+            .optional(),
+        country: z.enum(ADDRESS_COUNTRIES),
+        streetName: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
+        apartmentNumber: z.string().trim().optional(),
+        // The format depends on the country, so it is checked in the refine below.
+        zipCode: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
+        city: z.string().trim().min(1, REQUIRED_ERROR_MESSAGE),
+    })
+    .refine(
+        (data) => !data.zipCode || isValidPostalCode(data.country, data.zipCode),
+        {
+            error: "error.zipInvalid" satisfies TranslationKey,
+            path: ["zipCode"],
+            when: () => true,
+        },
+    )
+    .refine(
+        (data) => data.contactEmail || data.contactSms || data.contactWhatsapp,
+        {
+            error: "error.contactRequired" satisfies TranslationKey,
+            path: ["contactWhatsapp"], // Chosen the first option as the error path. Must match error detection in checkbox component
+            // Without this, zod skips the rule while any other field (e.g. a later step) is invalid.
+            when: () => true,
+        },
+    )
+    .refine(
+        (data) =>
+            data.repairRoofRepairAndMaintenance ||
+            data.repairGutterInstallation ||
+            data.repairSheetMetalWork ||
+            data.repairRoofWindowsAndHatches ||
+            data.repairRoofInsulation ||
+            data.repairSoffitInstallation ||
+            Boolean(data.additionalInfo),
+        {
+            error: "error.serviceRequired" satisfies TranslationKey,
+            path: ["repairRoofRepairAndMaintenance"], // Chosen the first option as the error path. Must match error detection in RepairDetails
+            when: () => true,
+        },
+    );
+
+type QuotationFormData = z.infer<typeof quotationSchema>;
+
+export default function Quotation(props: { lang: Language }) {
+    return (
+        <I18nProvider lang={props.lang}>
+            <QuotationForm />
+        </I18nProvider>
+    );
+}
+
+function QuotationForm() {
+    const { language } = useTranslation();
+    const methods = useForm<QuotationFormData>({
+        resolver: zodResolver(quotationSchema),
+        // Controlled fields (e.g. PhoneInput) have no DOM value to fall back on, so they need explicit defaults.
+        defaultValues: { phoneNumber: "", country: ADDRESS_COUNTRY_FOR_LANGUAGE[language] },
+    });
+    const { handleSubmit } = methods;
+    const currentSection = useStore($currentSection);
+    const maxSection = useStore($maxSection);
+    const { t } = useTranslation();
+
+    useEffect(() => {
+        // Form data is not persisted yet, so a fresh load always starts at step 1.
+        syncSectionWithUrl(true);
+        const onPopState = () => syncSectionWithUrl();
+        window.addEventListener("popstate", onPopState);
+        return () => window.removeEventListener("popstate", onPopState);
+    }, []);
+
+    useEffect(() => {
+        // iOS Safari keeps the page shifted after the keyboard closes (e.g. after autofill) and
+        // then taps on `position: fixed` elements miss until the page scrolls. A tiny scroll fixes it.
+        let timeout: ReturnType<typeof setTimeout>;
+        const nudgeScroll = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                window.scrollBy(0, 1);
+                window.scrollBy(0, -1);
+            }, 150);
+        };
+        document.addEventListener("focusout", nudgeScroll);
+        window.visualViewport?.addEventListener("resize", nudgeScroll);
+        return () => {
+            clearTimeout(timeout);
+            document.removeEventListener("focusout", nudgeScroll);
+            window.visualViewport?.removeEventListener("resize", nudgeScroll);
+        };
+    }, []);
+
+    return (
+        <>
+            <ul className="steps my-8 text-sm font-bold w-full">
+                {STEPS.map((label, i) => (
+                    <li
+                        key={label}
+                        className={classNames("step min-w-0 px-0.5 break-words hyphens-auto", {
+                            "step-secondary": i < currentSection,
+                            "cursor-pointer": i + 1 < currentSection,
+                        })}
+                        onClick={() => {
+                            if (i + 1 < currentSection && i + 1 <= maxSection) {
+                                redirectToSection(i + 1);
+                            }
+                        }}>
+                        {t(label)}
+                    </li>
+                ))}
+            </ul>
+            <div className="mx-4">
+                {/* TODO: Make modal for exiting before compleating */}
+                {/* TODO: Make next/done keaybord keys switch inputs */}
+                {/* TODO: Make form progress persist in the localStorage */}
+                <div className="text-3xl font-bold mb-2">
+                    {currentSection === 1 && t("heading.contact")}
+                    {currentSection === 2 && t("heading.repair")}
+                    {currentSection === 3 && t("heading.location")}
+                    {currentSection === 4 && t("heading.summary")}
+                </div>
+                <FormProvider {...methods}>
+                    <form
+                        onSubmit={handleSubmit((data) => {
+                            // TODO: Send the quotation to the backend once an endpoint exists.
+                            console.log(data);
+                        })}
+                        className="flex flex-col justify-center form-with-footer">
+                        {currentSection === 1 && <ContactInfo />}
+                        {currentSection === 2 && <RepairDetails />}
+                        {currentSection === 3 && <LocationDetails />}
+                        {currentSection === 4 && <Summary />}
+                    </form>
+                </FormProvider>
+            </div>
+        </>
+    );
+}
