@@ -2,8 +2,8 @@
 import LanguagePicker from "./LanguagePicker.astro"
 import HamburgerMenu from "./HamburgerMenu.astro"
 import logo from "../assets/logo_shrink.png"
-const base = import.meta.env.BASE_URL
-const homePath = base.endsWith("/") ? base : `${base}/`
+import { withBase } from "../utils/withBase"
+const homePath = withBase("/")
 ---
 <div class="grid grid-cols-3 items-center">
     <div class="justify-self-start">
