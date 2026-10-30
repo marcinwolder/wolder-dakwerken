@@ -10,11 +10,12 @@ const { lang } = Astro.props as { lang: Language };
     <img
         src={Logo.src}
         alt="Logo"
-        class="w-70 brightness-0 drop-shadow-sm drop-shadow-gray-300"
+        class="w-70 lg:w-56 brightness-0 drop-shadow-sm drop-shadow-gray-300"
     />
 </div>
+<div class="lg:grid lg:grid-cols-2 lg:items-center lg:gap-16 lg:mt-12">
 <LandingContent client:load lang={lang} />
-<div class="flex flex-col items-center mx-8 mb-8">
+<div class="flex flex-col items-center mx-8 mb-8 lg:mx-0 lg:mb-0">
     <figure class="diff aspect-video" tabindex="0">
         <div class="diff-item-1" role="img" tabindex="0">
             <img
@@ -30,4 +31,5 @@ const { lang } = Astro.props as { lang: Language };
         </div>
         <div class="diff-resizer"></div>
     </figure>
+</div>
 </div>

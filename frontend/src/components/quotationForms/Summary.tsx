@@ -19,11 +19,13 @@ function SummaryCard(props: {
     icon: ReactNode;
     title: string;
     step: number;
+    wide?: boolean;
     children: ReactNode;
 }) {
     const { t } = useTranslation();
     return (
-        <section className="card card-border bg-base-100 border-primary shadow-lg">
+        <section
+            className={`card card-border bg-base-100 border-primary shadow-lg ${props.wide ? "lg:col-span-2" : ""}`}>
             <div className="card-body p-4 gap-3">
                 <div className="flex items-center gap-3">
                     <span className="text-2xl text-secondary shrink-0">
@@ -71,8 +73,8 @@ export default function Summary() {
 
     return (
         <>
-            <div className="flex flex-col gap-3 mt-4">
-                <SummaryCard icon={<BsPerson />} title={t("summary.contact")} step={1}>
+            <div className="flex flex-col gap-3 mt-4 lg:grid lg:grid-cols-2 lg:gap-4">
+                <SummaryCard icon={<BsPerson />} title={t("summary.contact")} step={1} wide>
                     <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <Field label={t("summary.name")}>
                             {getValues("firstName")} {getValues("lastName")}

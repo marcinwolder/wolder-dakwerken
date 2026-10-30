@@ -19,7 +19,7 @@ function Checkbox(props: { label: string; name: string }) {
         <input
             type="checkbox"
             aria-label={props.label}
-            className="btn btn-lg rounded-3xl w-full h-auto aspect-4/3 text-base font-bold shadow-md"
+            className="btn btn-lg rounded-3xl w-full h-auto aspect-4/3 text-base lg:text-xl lg:aspect-3/2 font-bold shadow-md"
             {...registration}
             onChange={(e) => {
                 registration.onChange(e);
@@ -49,7 +49,7 @@ export default function RepairDetails() {
             {serviceError && (
                 <p className="label text-error mt-2 whitespace-normal">{serviceError}</p>
             )}
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {REPAIR_OPTIONS.map(({ name, label }) => (
                     <Checkbox key={name} label={t(label)} name={name} />
                 ))}

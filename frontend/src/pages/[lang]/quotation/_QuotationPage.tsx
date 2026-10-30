@@ -153,8 +153,8 @@ function QuotationForm() {
     }, []);
 
     return (
-        <>
-            <ul className="steps my-8 text-sm font-bold w-full">
+        <div className="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12 lg:items-start lg:mt-8">
+            <ul className="steps steps-horizontal lg:steps-vertical my-8 lg:my-0 lg:sticky lg:top-8 text-sm lg:text-lg font-bold w-full">
                 {STEPS.map((label, i) => (
                     <li
                         key={label}
@@ -171,11 +171,11 @@ function QuotationForm() {
                     </li>
                 ))}
             </ul>
-            <div className="mx-4">
+            <div className="mx-4 lg:mx-0 lg:rounded-box lg:border-2 lg:border-primary lg:p-10 lg:shadow-lg">
                 {/* TODO: Make modal for exiting before compleating */}
                 {/* TODO: Make next/done keaybord keys switch inputs */}
                 {/* TODO: Make form progress persist in the localStorage */}
-                <div className="text-3xl font-bold mb-2">
+                <div className="text-3xl lg:text-4xl font-bold mb-2 lg:mb-4">
                     {currentSection === 1 && t("heading.contact")}
                     {currentSection === 2 && t("heading.repair")}
                     {currentSection === 3 && t("heading.location")}
@@ -195,6 +195,6 @@ function QuotationForm() {
                     </form>
                 </FormProvider>
             </div>
-        </>
+        </div>
     );
 }
