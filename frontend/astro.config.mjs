@@ -10,6 +10,10 @@ export default defineConfig({
   integrations: [react()],
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    // The map is imported lazily, so without this Vite finds these deps late and re-optimizes mid-session.
+    optimizeDeps: {
+      include: ['leaflet', 'react-leaflet', 'react-dom/server', 'react-icons/fa']
+    }
   }
 });

@@ -7,14 +7,23 @@ import { useStore } from '@nanostores/react';
 
 import ContactInfo from '../../components/quotationForms/ContactInfo';
 import RepairDetails from '../../components/quotationForms/RepairDetails';
-import { $currentSection } from '../../quotationStore';
+import { useEffect } from 'react';
+import classNames from 'classnames';
+
+import {
+    $currentSection,
+    $maxSection,
+    redirectToSection,
+    STEPS,
+    syncSectionWithUrl,
+} from '../../quotationStore';
 import LocationDetails from '../../components/quotationForms/LocationDetails';
 import Summary from '../../components/quotationForms/Summary';
+import { ADDITIONAL_INFO_MAX_LENGTH } from '../../components/quotationForms/repairOptions';
 
 const REQUIRED_ERROR_MESSAGE = "Pole jest wymagane";
 
 // TODO: Make better validation for phone number - add country selector and/or automatic detection
-// TODO: remove spaces in phone number
 const quotationSchema = z
     .object({
         firstName: z.string().min(1, REQUIRED_ERROR_MESSAGE),
@@ -41,7 +50,13 @@ const quotationSchema = z
         repairRoofWindowsAndHatches: z.boolean(),
         repairRoofInsulation: z.boolean(),
         repairSoffitInstallation: z.boolean(),
+        additionalInfo: z
+            .string()
+            .trim()
+            .max(ADDITIONAL_INFO_MAX_LENGTH, `Maksymalnie ${ADDITIONAL_INFO_MAX_LENGTH} znaków`)
+            .optional(),
         streetName: z.string().min(1, REQUIRED_ERROR_MESSAGE),
+        apartmentNumber: z.string().trim().optional(),
         zipCode: z.string().min(1, REQUIRED_ERROR_MESSAGE).regex(/(\d\d-\d\d\d)|(\d{5})/, "Niepoprawny format pocztowego"),
         city: z.string().min(1, REQUIRED_ERROR_MESSAGE),
     })
@@ -59,10 +74,11 @@ const quotationSchema = z
             data.repairSheetMetalWork ||
             data.repairRoofWindowsAndHatches ||
             data.repairRoofInsulation ||
-            data.repairSoffitInstallation,
+            data.repairSoffitInstallation ||
+            Boolean(data.additionalInfo),
         {
-            error: "Wybierz przynajmniej jedną interesującą usługę",
-            path: ["repairRoofRepairAndMaintenance"], // Chosen the first option as the error path. Must match error detection in checkbox component
+            error: "Wybierz przynajmniej jedną usługę lub opisz swoje potrzeby",
+            path: ["repairRoofRepairAndMaintenance"], // Chosen the first option as the error path. Must match error detection in RepairDetails
         },
     );
 
@@ -71,16 +87,44 @@ type QuotationFormData = z.infer<typeof quotationSchema>;
 export default function Quotation() {
     const methods = useForm<QuotationFormData>({
         resolver: zodResolver(quotationSchema),
+        // Controlled fields (e.g. PhoneInput) have no DOM value to fall back on, so they need explicit defaults.
+        defaultValues: { phoneNumber: "" },
     });
     const { handleSubmit } = methods;
     const currentSection = useStore($currentSection);
+    const maxSection = useStore($maxSection);
+
+    useEffect(() => {
+        // Form data is not persisted yet, so a fresh load always starts at step 1.
+        syncSectionWithUrl(true);
+        const onPopState = () => syncSectionWithUrl();
+        window.addEventListener("popstate", onPopState);
+        return () => window.removeEventListener("popstate", onPopState);
+    }, []);
+
     return (
         <>
+            <ul className="steps my-8 text-sm w-full">
+                {STEPS.map((label, i) => (
+                    <li
+                        key={label}
+                        className={classNames("step", {
+                            "step-secondary": i < currentSection,
+                            "cursor-pointer": i + 1 < currentSection,
+                        })}
+                        onClick={() => {
+                            if (i + 1 < currentSection && i + 1 <= maxSection) {
+                                redirectToSection(i + 1);
+                            }
+                        }}>
+                        {label}
+                    </li>
+                ))}
+            </ul>
             <div className="mx-4">
                 {/* TODO: Make modal for exiting before compleating */}
                 {/* TODO: Make next/done keaybord keys switch inputs */}
                 {/* TODO: Make form progress persist in the localStorage */}
-                {/* TODO: User should not be able to get to next step using url */}
                 <div className="text-xl mb-2">
                     {currentSection === 1 && "Powiedz mi o sobie trochę więcej"}
                     {currentSection === 2 && "Jaka naprawa cię interesuje"}

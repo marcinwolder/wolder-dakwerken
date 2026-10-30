@@ -5,6 +5,7 @@ import { BsChatSquareText, BsEnvelopeAt, BsWhatsapp } from 'react-icons/bs';
 import { $currentSection, redirectToSection } from '../../quotationStore';
 import FormCheckbox from '../FormCheckbox';
 import FormInput from '../FormInput';
+import PhoneInput from '../PhoneInput';
 
 export default function ContactInfo() {
     const {
@@ -22,11 +23,10 @@ export default function ContactInfo() {
                     placeholder="Kowalski"
                 />
             </div>
-            <FormInput
+            <PhoneInput
                 id="phoneNumber"
                 name="Numer telefonu"
-                type="tel"
-                placeholder="+48 111 222 333"
+                placeholder="111 222 333"
             />
             <FormInput
                 id="email"
@@ -63,7 +63,7 @@ export default function ContactInfo() {
                     </FormCheckbox>
                 </div>
                 {isContactError && (
-                    <p className="label text-error mt-2">
+                    <p className="label text-error mt-2 whitespace-normal">
                         {errors["contactWhatsapp"]?.message?.toString()}
                     </p>
                 )}

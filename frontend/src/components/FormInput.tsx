@@ -43,7 +43,7 @@ const FormInput: React.FC<
             <input
                 type={type}
                 id={id}
-                className={classNames("input", {
+                className={classNames("input w-full", {
                     "input-error": isError,
                 })}
                 autoComplete={autoComplete}
@@ -58,7 +58,7 @@ const FormInput: React.FC<
                 }}
             />
             {errors[id] && (
-                <p className={classNames("label", { "text-error": isError })}>
+                <p className={classNames("label whitespace-normal", { "text-error": isError })}>
                     {errors[id]?.message?.toString()}
                 </p>
             )}
