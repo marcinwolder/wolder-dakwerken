@@ -220,16 +220,16 @@ export default function MapPicker({
                 <div className="modal-action grid grid-cols-2 gap-2">
                     <button
                         type="button"
-                        className="btn btn-lg rounded-3xl font-bold col-span-2"
+                        className="btn btn-lg h-auto min-h-14 py-3 px-3 leading-tight rounded-3xl font-bold col-span-2"
                         onClick={locateMe}>
                         {t("map.locate")}
                     </button>
-                    <button type="button" className="btn btn-lg btn-ghost border-primary rounded-3xl font-bold" onClick={onClose}>
+                    <button type="button" className="btn btn-lg h-auto min-h-14 py-3 px-3 leading-tight btn-ghost border-primary rounded-3xl font-bold" onClick={onClose}>
                         {t("map.cancel")}
                     </button>
                     <button
                         type="button"
-                        className="btn btn-lg btn-secondary rounded-3xl font-bold"
+                        className="btn btn-lg h-auto min-h-14 py-3 px-3 leading-tight btn-secondary rounded-3xl font-bold"
                         disabled={!address || !addressText}
                         onClick={() => address && onSelect(address)}>
                         {t("map.use")}
