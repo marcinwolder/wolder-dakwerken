@@ -228,9 +228,11 @@ export default function PhoneInput(props: {
     );
 
     return (
-        <fieldset className="fieldset w-full">
+        <fieldset className="fieldset w-full min-w-0">
             <label
-                className={classNames("label", { "text-error": isError })}
+                className={classNames("label w-full whitespace-normal leading-tight", {
+                    "text-error": isError,
+                })}
                 htmlFor={props.id}>
                 {props.name}
             </label>
