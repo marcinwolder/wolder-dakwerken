@@ -24,7 +24,7 @@ export default function AnimatedHouse() {
             viewBox="0 0 266.35385 197.52087"
             xlinkHref="http://www.w3.org/1999/xlink"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-42">
+            className="w-28 sm:w-42 shrink-0">
             <g id="layer1" transform="translate(-23.471834,-22.776345)">
                 <path
                     ref={pathRef}

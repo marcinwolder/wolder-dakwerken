@@ -21,9 +21,9 @@ function Content() {
                     </span>
                 </span>
             </div>
-            <div className="flex my-12 mx-auto w-fit lg:mx-0 lg:my-10">
+            <div className="flex items-center my-12 mx-auto w-fit max-w-full px-4 lg:px-0 lg:mx-0 lg:my-10">
                 <AnimatedHouse />
-                <div className="flex flex-col items-end w-fit font-bold text-2xl lg:text-4xl">
+                <div className="flex flex-col items-end min-w-0 w-fit font-bold text-xl sm:text-2xl lg:text-4xl">
                     <span>{t("landing.hit")}</span>
                     <span className="text-accent">{t("landing.perfect")}</span>
                     <span>{t("landing.place")}</span>
